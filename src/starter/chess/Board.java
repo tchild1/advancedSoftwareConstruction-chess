@@ -1,6 +1,6 @@
 package chess;
 
-public class CBoard  implements  ChessBoard {
+public class Board  implements  ChessBoard {
     @Override
     public void addPiece(ChessPosition position, ChessPiece piece) {
 
