@@ -7,6 +7,8 @@ import java.util.Collection;
  */
 public interface ChessPiece {
 
+    ChessPiece deepCopyPiece();
+
     /**
      * The various different chess piece options
      */
@@ -28,6 +30,8 @@ public interface ChessPiece {
      * @return which type of chess piece this piece is
      */
     PieceType getPieceType();
+
+    void setPieceType(PieceType type);
 
     /**
      * Calculates all the positions a chess piece can move to

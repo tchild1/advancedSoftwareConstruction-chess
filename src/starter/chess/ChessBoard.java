@@ -19,9 +19,24 @@ public interface ChessBoard {
      */
     ChessPiece getPiece(ChessPosition position);
 
+
+    /**
+     * returns true if a position is empty
+     * @param position The position to check
+     * @return True or False
+     */
+    public boolean isEmpty(Position position);
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
     void resetBoard();
+
+    /**
+     * Clears all pieces off board
+     */
+    void clearBoard();
+
+    ChessBoard deepCopyBoard();
 }
