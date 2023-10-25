@@ -1,14 +1,18 @@
 package daos;
 
-import models.AuthToken;
+import exceptions.DataAccessException;
+import exceptions.ForbiddenException;
 import models.User;
-
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * This table provides access to user database tables
  */
 public class UserDAO {
+
+    public static Map<String, User> users = new HashMap<>();
 
     /**
      * Creates a new user in the database
@@ -16,50 +20,35 @@ public class UserDAO {
      * @param newUser to be created
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public void CreateUser(User newUser) throws DataAccessException {}
-
-    /**
-     * Deletes a user from the Database
-     *
-     * @param user to be deleted
-     * @throws DataAccessException if there is an error, exception is thrown
-     */
-    public void DeleteUser(User user) throws DataAccessException {}
+    public void CreateUser(User newUser) throws DataAccessException, ForbiddenException {
+        if (users.get(newUser.getUsername()) == null) {
+            users.put(newUser.getUsername(), newUser);
+        } else {
+            throw new ForbiddenException("Error: already taken");
+        }
+    }
 
     /**
      * Deletes all users from the database
      *
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public void DeleteAllUsers() throws DataAccessException {}
+    public void DeleteAllUsers() throws DataAccessException {
+        users.clear();
+    }
 
     /**
      * Gets a single user from the database by their authToken
      *
-     * @param authToken of user to be retrieved
-     * @return user of the given AuthToken
+     * @param Username of user to be retrieved
+     * @return user of the given Username
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public User GetUser(AuthToken authToken) throws DataAccessException {
-        return null;
+    public Boolean AuthenticateUser(String Username, String Password) throws DataAccessException {
+        User DbUser = users.get(Username);
+        if (DbUser == null) {
+            return false;
+        }
+        return Objects.equals(DbUser.getPassword(), Password);
     }
-
-    /**
-     * Gets a list of all users from the Database
-     *
-     * @return a list of all users
-     * @throws DataAccessException if there is an error, exception is thrown
-     */
-    public ArrayList<User> GetAllUsers() throws DataAccessException {
-        return null;
-    }
-
-    /**
-     * Updates a User's information in the Database
-     *
-     * @param newUserInfo user object with the new information of the user
-     * @param UserID of the user to be changed
-     * @throws DataAccessException if there is an error, exception is thrown
-     */
-    public void UpdateUser(User newUserInfo, String UserID) throws DataAccessException {}
 }

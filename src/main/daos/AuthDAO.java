@@ -1,20 +1,26 @@
 package daos;
 
+import exceptions.DataAccessException;
+import exceptions.NotAuthorizedException;
 import models.AuthToken;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class provides access to authorization database tables
  */
 public class AuthDAO {
 
+    public static Map<String, String> dictionary = new HashMap<>();
+
     /**
-     * connects to the database and retrieves the user associated with an AuthToken
+     * Checks if a user is authorized by checking their authToken is in the database
      *
-     * @param token of the user we want to retrieve
-     * @return ID of the User's AuthToken
+     * @param token of the user we want to check
+     * @return Boolean authorized or not
      */
-    public String GetUserID(AuthToken token) {
-        return null;
+    public static Boolean IsAuthorized(String token) throws DataAccessException {
+        return dictionary.containsKey(token);
     }
 
     /**
@@ -22,12 +28,35 @@ public class AuthDAO {
      *
      * @param authToken to be added to the database
      */
-    public void AddAuthToken(AuthToken authToken) {}
+    public static void AddAuthToken(AuthToken authToken) throws DataAccessException {
+        dictionary.put(authToken.getAuthToken(), authToken.getUserName());
+    }
+
+    /**
+     * Get username with an Authtoken
+     *
+     * @param authToken of the user
+     * @return username of the user with given authToken
+     * @throws DataAccessException if error extracting data
+     */
+    public static String GetUsername(String authToken) throws DataAccessException {
+        return dictionary.get(authToken);
+    }
 
     /**
      * Deletes the AuthToken of a given user from the Database
      *
-     * @param userID of the AuthToken to be removed
+     * @param authToken of the AuthToken to be removed
      */
-    public void DeleteAuthToken(String userID) {}
+    public void DeleteAuthToken(String authToken) throws DataAccessException, NotAuthorizedException {
+        dictionary.remove(authToken);
+    }
+
+    /**
+     * Deletes all authTokens from the database
+     * @throws DataAccessException thrown if error occurs when accessing data
+     */
+    public void DeleteAllAuthTokens() throws DataAccessException {
+        dictionary.clear();
+    }
 }

@@ -1,7 +1,12 @@
 package services;
 
+import daos.AuthDAO;
+import exceptions.DataAccessException;
+import daos.UserDAO;
+import exceptions.NotAuthorizedException;
+import models.AuthToken;
 import requests.LoginRequest;
-import resposnses.LoginResponse;
+import responses.LoginResponse;
 
 /**
  * service for a request to login
@@ -14,7 +19,13 @@ public class LoginService {
      * @param request object with username and password of user
      * @return a response with a new AuthToken
      */
-    public LoginResponse login(LoginRequest request) {
-        return null;
+    public LoginResponse login(LoginRequest request) throws DataAccessException, NotAuthorizedException {
+         if (new UserDAO().AuthenticateUser(request.getUsername(), request.getPassword())) {
+             AuthToken token = new AuthToken(request.getUsername());
+             AuthDAO.AddAuthToken(token);
+             return new LoginResponse(token.getAuthToken(), request.getUsername());
+         } else {
+            throw new NotAuthorizedException("Error: unauthorized");
+         }
     }
 }

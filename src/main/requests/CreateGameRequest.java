@@ -1,7 +1,5 @@
 package requests;
 
-import models.AuthToken;
-
 /**
  * class representing a request to create a new game
  */
@@ -10,7 +8,7 @@ public class CreateGameRequest extends Request {
     /**
      * AuthToken authorizing this request
      */
-    AuthToken authToken;
+    String authToken;
 
     /**
      * name of the game to be created
@@ -23,7 +21,7 @@ public class CreateGameRequest extends Request {
      * @param authToken of user attempting to create a game
      * @param gameName name of the game being created
      */
-    public CreateGameRequest(AuthToken authToken, String gameName) {
+    public CreateGameRequest(String authToken, String gameName) {
         super(RequestMethods.POST);
         this.authToken = authToken;
         this.gameName = gameName;
@@ -33,15 +31,11 @@ public class CreateGameRequest extends Request {
         return gameName;
     }
 
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
-    }
-
-    public AuthToken getAuthToken() {
+    public String getAuthToken() {
         return authToken;
     }
 
-    public void setAuthToken(AuthToken authToken) {
+    public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
 }

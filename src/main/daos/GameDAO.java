@@ -1,7 +1,9 @@
 package daos;
 
+import exceptions.DataAccessException;
+import exceptions.ForbiddenException;
 import models.Game;
-import models.User;
+import requests.JoinGameRequest;
 
 import java.util.ArrayList;
 
@@ -10,45 +12,58 @@ import java.util.ArrayList;
  */
 public class GameDAO {
 
+    public static ArrayList<Game> AllGames = new ArrayList<Game>();
+
     /**
      * adds a game to the Database
      *
-     * @param gameName name of the game to be added
+     * @param game object to be created
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public void CreateGame(String gameName) throws DataAccessException {}
-
-    /**
-     * deletes a game from the database
-     *
-     * @param game to be deleted
-     * @throws DataAccessException if there is an error, exception is thrown
-     */
-    public void DeleteGame(Game game) throws DataAccessException {}
+    public static void CreateGame(Game game) throws DataAccessException {
+        AllGames.add(game);
+    }
 
     /**
      * deletes all games from the database
      *
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public void DeleteAllGames() throws DataAccessException {}
+    public void DeleteAllGames() throws DataAccessException {
+        AllGames.clear();
+    }
 
     /**
-     * Updates a currently existing game in the database
-     * @param game being played
+     * Adds a user to play a game
+     * @param gameID being played
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public void UpdateGame(Game game) throws DataAccessException {}
+    public static void AddPlayerToGame(String gameID, JoinGameRequest.PlayerColor color, String username) throws DataAccessException, ForbiddenException {
+        for (Game allGame : AllGames) {
+            if (String.valueOf(allGame.getGameID()).equals(gameID)) {
+                if (color == JoinGameRequest.PlayerColor.BLACK) {
+                    if (allGame.getBlackUsername() == null) {
+                        allGame.setBlackUsername(username);
+                    } else {
+                        throw new ForbiddenException("Error: already taken");
+                    }
+                } else if (color == JoinGameRequest.PlayerColor.WHITE) {
+                    if (allGame.getWhiteUsername() == null) {
+                        allGame.setWhiteUsername(username);
+                    } else {
+                        throw new ForbiddenException("Error: already taken");
+                    }
+                }
+            }
+        }
+    }
 
-    /**
-     * Gets a game from the database
-     *
-     * @param gameID id of the game to be retrieved
-     * @return a game
-     * @throws DataAccessException if there is an error, exception is thrown
-     */
-    public Game GetGame(String gameID) throws DataAccessException {
-        return null;
+    public static void AddObserverToGame(String gameID, String username) {
+        for (Game game : AllGames) {
+            if (String.valueOf(game.getGameID()).equals(gameID)) {
+                game.addObservers(username);
+            }
+        }
     }
 
     /**
@@ -57,16 +72,16 @@ public class GameDAO {
      * @return a list of all games being played
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public ArrayList<Game> GetAllGames() throws DataAccessException {
-        return null;
+    public static ArrayList<Game> GetAllGames() throws DataAccessException {
+        return AllGames;
     }
 
-    /**
-     * A method for claiming a spot in the game.
-     * The player's username is provided and should be saved as
-     * either the whitePlayer or blackPlayer in the database.
-     *
-     * @param user object with all the user's information
-     */
-    public void ClaimSpot(User user) throws DataAccessException {}
+    public static Boolean GameExists(String gameID) {
+        for (Game allGame : AllGames) {
+            if (String.valueOf(allGame.getGameID()).equals(gameID)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -1,7 +1,5 @@
 package requests;
 
-import models.AuthToken;
-
 /**
  * class representing a request to logout
  */
@@ -10,23 +8,23 @@ public class LogoutRequest extends Request {
     /**
      * token authorizing a user to sign out
      */
-    AuthToken authToken;
+    String authToken;
 
     /**
      * creates a request to logout of a game
      *
      * @param authToken of user trying to logout
      */
-    public LogoutRequest(AuthToken authToken) {
+    public LogoutRequest(String authToken) {
         super(RequestMethods.DELETE);
         this.authToken = authToken;
     }
 
-    public AuthToken getAuthToken() {
+    public String getAuthToken() {
         return authToken;
     }
 
-    public void setAuthToken(AuthToken authToken) {
+    public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
 }

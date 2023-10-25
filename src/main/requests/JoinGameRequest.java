@@ -1,7 +1,5 @@
 package requests;
 
-import models.AuthToken;
-
 /**
  * class representing a request to join a game
  */
@@ -10,7 +8,7 @@ public class JoinGameRequest extends Request {
     /**
      * enum of all potential player colors
      */
-    enum PlayerColor {
+    public enum PlayerColor {
         WHITE,
         BLACK
     }
@@ -28,7 +26,7 @@ public class JoinGameRequest extends Request {
     /**
      * AuthToken authorizing a user to join the game
      */
-    AuthToken authToken;
+    String authToken;
 
     /**
      * Creates a request to join a game
@@ -37,18 +35,18 @@ public class JoinGameRequest extends Request {
      * @param playerColor color the user is requesting to be
      * @param gameID of the game the user wants to join
      */
-    public JoinGameRequest(AuthToken authToken, PlayerColor playerColor, String gameID) {
+    public JoinGameRequest(String authToken, PlayerColor playerColor, String gameID) {
         super(RequestMethods.PUT);
         this.authToken = authToken;
         this.playerColor = playerColor;
         this.gameID = gameID;
     }
 
-    public AuthToken getAuthToken() {
+    public String getAuthToken() {
         return authToken;
     }
 
-    public void setAuthToken(AuthToken authToken) {
+    public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
 
@@ -62,9 +60,5 @@ public class JoinGameRequest extends Request {
 
     public PlayerColor getPlayerColor() {
         return playerColor;
-    }
-
-    public void setPlayerColor(PlayerColor playerColor) {
-        this.playerColor = playerColor;
     }
 }

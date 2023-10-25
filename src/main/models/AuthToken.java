@@ -1,5 +1,7 @@
 package models;
 
+import java.util.UUID;
+
 /**
  * Provides structure of an AuthToken associated with each user
  */
@@ -18,11 +20,10 @@ public class AuthToken {
     /**
      * Creates a new AuthToken
      *
-     * @param authToken string with AuthToken for a user
      * @param userName of user with this AuthToken
      */
-    public AuthToken(String authToken, String userName) {
-        this.authToken = authToken;
+    public AuthToken(String userName) {
+        this.authToken = UUID.randomUUID().toString();
         this.userName = userName;
     }
 

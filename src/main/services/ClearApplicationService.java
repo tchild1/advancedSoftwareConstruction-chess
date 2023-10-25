@@ -1,7 +1,11 @@
 package services;
 
+import daos.AuthDAO;
+import exceptions.DataAccessException;
+import daos.GameDAO;
+import daos.UserDAO;
 import requests.ClearApplicationRequest;
-import resposnses.ClearApplicationResponse;
+import responses.ClearApplicationResponse;
 
 /**
  * service for requests to clear all application data
@@ -22,7 +26,10 @@ public class ClearApplicationService {
      * @param request object with AuthToken and method of the request
      * @return returns a response object
      */
-    public ClearApplicationResponse clearApplication(ClearApplicationRequest request) {
-        return null;
+    public ClearApplicationResponse clearApplication(ClearApplicationRequest request) throws DataAccessException {
+        new UserDAO().DeleteAllUsers();
+        new AuthDAO().DeleteAllAuthTokens();
+        new GameDAO().DeleteAllGames();
+        return new ClearApplicationResponse();
     }
 }

@@ -1,6 +1,6 @@
 package models;
 
-import chess.ChessGame;
+import java.util.ArrayList;
 
 /**
  * class representing a game and all of its information
@@ -30,7 +30,9 @@ public class Game {
     /**
      * ChessGame object with Rules and board storage
      */
-    ChessGame game;
+    chess.Game game;
+
+    ArrayList<String> observers;
 
     /**
      * Constructor for games
@@ -39,22 +41,18 @@ public class Game {
      * @param whiteUsername username of white player
      * @param blackUsername username of black player
      * @param gameName name of this game
-     * @param game board and logic of the chess game
      */
-    public Game(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+    public Game(int gameID, String whiteUsername, String blackUsername, String gameName) {
         this.gameID = gameID;
         this.whiteUsername = whiteUsername;
         this.blackUsername = blackUsername;
         this.gameName = gameName;
-        this.game = game;
+        this.game = new chess.Game();
+        this.observers = new ArrayList<>();
     }
 
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
+    public void addObservers(String observer) {
+        this.observers.add(observer);
     }
 
     public int getGameID() {
@@ -65,11 +63,11 @@ public class Game {
         this.gameID = gameID;
     }
 
-    public ChessGame getGame() {
+    public chess.Game getGame() {
         return game;
     }
 
-    public void setGame(ChessGame game) {
+    public void setGame(chess.Game game) {
         this.game = game;
     }
 
