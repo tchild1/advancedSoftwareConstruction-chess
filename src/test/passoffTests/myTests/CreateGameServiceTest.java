@@ -8,20 +8,14 @@ import models.AuthToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
-import requests.ClearApplicationRequest;
-import requests.CreateGameRequest;
-import requests.RegisterUserRequest;
+import requests.ClearApplicationRequest;;
 import responses.CreateGameResponse;
-import responses.RegisterUserResponse;
 import services.ClearApplicationService;
 import services.CreateGameService;
-import services.RegisterUserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CreateGameServiceTest {
-
-    RegisterUserResponse testUser;
 
     @BeforeEach
     void setUp() throws DataAccessException, ForbiddenException, BadRequestException {

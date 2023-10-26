@@ -7,13 +7,9 @@ import exceptions.ForbiddenException;
 import exceptions.NotAuthorizedException;
 import models.AuthToken;
 import requests.*;
-import responses.JoinGameResponse;
 import responses.LoginResponse;
-import responses.LogoutResponse;
 import responses.RegisterUserResponse;
 import services.*;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Used for testing your code
@@ -26,6 +22,7 @@ public class TestFactory {
     static String testUsername = "tchild01";
     static String testPassword = "password";
     static String testEmail = "childtanner@gmail.com";
+
     //Chess Functions
     //------------------------------------------------------------------------------------------------------------------
     public static ChessBoard getNewBoard(){
@@ -84,14 +81,18 @@ public class TestFactory {
         return 3000L;
     }
     //------------------------------------------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Below are functions I wrote to make my unit tests easy with less repeated code
+    //------------------------------------------------------------------------------------------------------------------
     public static responses.CreateGameResponse createGame(boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+        CreateGameRequest createGameRequest;
         if (correctAuth) {
-            CreateGameRequest createGameRequest = new CreateGameRequest(testUser.getAuthToken(), String.valueOf(CreateGameService.getCurrID()));
-            return new CreateGameService().createGame(createGameRequest);
+            createGameRequest = new CreateGameRequest(testUser.getAuthToken(), String.valueOf(CreateGameService.getCurrID()));
         } else {
-            CreateGameRequest createGameRequest = new CreateGameRequest("FakeAuth", String.valueOf(CreateGameService.getCurrID()));
-            return new CreateGameService().createGame(createGameRequest);
+            createGameRequest = new CreateGameRequest("FakeAuth", String.valueOf(CreateGameService.getCurrID()));
         }
+        return new CreateGameService().createGame(createGameRequest);
     }
 
     public static RegisterUserResponse createTestUser() throws ForbiddenException, BadRequestException, DataAccessException {
@@ -102,55 +103,46 @@ public class TestFactory {
     }
 
     public static responses.ListGamesResponse listGames(Boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+        ListGamesRequest listGamesRequest;
         if (correctAuth) {
-            ListGamesRequest listGamesRequest = new ListGamesRequest(testUser.getAuthToken());
-            return new ListGamesService().listGames(listGamesRequest);
+            listGamesRequest = new ListGamesRequest(testUser.getAuthToken());
         } else {
-            ListGamesRequest listGamesRequest = new ListGamesRequest("Fake AuthToken");
-            return new ListGamesService().listGames(listGamesRequest);
+            listGamesRequest = new ListGamesRequest("Fake AuthToken");
         }
+        return new ListGamesService().listGames(listGamesRequest);
     }
 
     public static void clearApplication() throws DataAccessException {
         new ClearApplicationService().clearApplication(new ClearApplicationRequest(new AuthToken("UNIT_TESTS")));
     }
 
-    public static JoinGameResponse joinGame(JoinGameRequest.PlayerColor color) throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException {
+    public static void joinGame(JoinGameRequest.PlayerColor color) throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException {
         JoinGameRequest request = new JoinGameRequest(testUser.getAuthToken(), color, String.valueOf(CreateGameService.getCurrID()));
-        return new JoinGameService().joinGame(request);
+        new JoinGameService().joinGame(request);
     }
 
     public static LoginResponse login(boolean currectAuth) throws NotAuthorizedException, DataAccessException {
+        LoginRequest request;
         if (currectAuth) {
-            LoginRequest request = new LoginRequest(testUsername, testPassword);
-            return new LoginService().login(request);
+            request = new LoginRequest(testUsername, testPassword);
         } else {
-            LoginRequest request = new LoginRequest(testUsername, "WRONG_PASSWORD");
-            return new LoginService().login(request);
+            request = new LoginRequest(testUsername, "WRONG_PASSWORD");
         }
+        return new LoginService().login(request);
     }
 
-    public static LogoutResponse logout(boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+    public static void logout(boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+        LogoutRequest request;
         if (correctAuth) {
-            LogoutRequest request = new LogoutRequest(testUser.getAuthToken());
-            return new LogoutService().logout(request);
+            request = new LogoutRequest(testUser.getAuthToken());
         } else {
-            LogoutRequest request = new LogoutRequest("WRONG_AUTH");
-            return new LogoutService().logout(request);
+            request = new LogoutRequest("WRONG_AUTH");
         }
-
+        new LogoutService().logout(request);
     }
 
     public static String getTestUsername() {
         return testUsername;
-    }
-
-    public static String getTestEmail() {
-        return testEmail;
-    }
-
-    public static String getTestPassword() {
-        return testPassword;
     }
 
     public static RegisterUserResponse getTestUser() {

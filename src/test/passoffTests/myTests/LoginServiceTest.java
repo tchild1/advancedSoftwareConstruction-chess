@@ -4,24 +4,13 @@ import exceptions.BadRequestException;
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
 import exceptions.NotAuthorizedException;
-import models.AuthToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
-import requests.ClearApplicationRequest;
-import requests.LoginRequest;
-import requests.RegisterUserRequest;
 import responses.LoginResponse;
-import responses.RegisterUserResponse;
-import services.ClearApplicationService;
-import services.LoginService;
-import services.RegisterUserService;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class LoginServiceTest {
-
-    RegisterUserResponse testUser;
 
     @BeforeEach
     void setUp() throws DataAccessException, ForbiddenException, BadRequestException {

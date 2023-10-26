@@ -3,16 +3,10 @@ package passoffTests.myTests;
 import exceptions.BadRequestException;
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
-import models.AuthToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
-import requests.ClearApplicationRequest;
-import requests.RegisterUserRequest;
 import responses.RegisterUserResponse;
-import services.ClearApplicationService;
-import services.RegisterUserService;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class RegisterUserServiceTest {
@@ -37,8 +31,6 @@ class RegisterUserServiceTest {
     void registerUserNegative() throws ForbiddenException, BadRequestException, DataAccessException {
         TestFactory.createTestUser();
 
-        assertThrowsExactly(ForbiddenException.class ,() -> {
-            TestFactory.createTestUser();
-        }, "Registering the same user twice should have thrown an error");
+        assertThrowsExactly(ForbiddenException.class , TestFactory::createTestUser, "Registering the same user twice should have thrown an error");
     }
 }

@@ -4,25 +4,13 @@ import exceptions.BadRequestException;
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
 import exceptions.NotAuthorizedException;
-import models.AuthToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
-import requests.ClearApplicationRequest;
-import requests.CreateGameRequest;
 import requests.JoinGameRequest;
-import requests.RegisterUserRequest;
-import responses.RegisterUserResponse;
-import services.ClearApplicationService;
-import services.CreateGameService;
-import services.JoinGameService;
-import services.RegisterUserService;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class JoinGameServiceTest {
-
-    RegisterUserResponse testUser;
 
     @BeforeEach
     void setUp() throws DataAccessException, ForbiddenException, BadRequestException, NotAuthorizedException {
