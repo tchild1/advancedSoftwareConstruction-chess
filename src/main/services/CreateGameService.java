@@ -12,7 +12,11 @@ import responses.CreateGameResponse;
  * service for a request to create a new game
  */
 public class CreateGameService {
-    static private int currID;
+    static public int currID;
+
+    public static int getCurrID() {
+        return currID;
+    }
 
     /**
      * Creates a new game after checking a user's AuthToken

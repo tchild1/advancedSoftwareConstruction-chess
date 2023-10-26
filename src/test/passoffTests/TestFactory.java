@@ -1,6 +1,19 @@
 package passoffTests;
 
 import chess.*;
+import exceptions.BadRequestException;
+import exceptions.DataAccessException;
+import exceptions.ForbiddenException;
+import exceptions.NotAuthorizedException;
+import models.AuthToken;
+import requests.*;
+import responses.JoinGameResponse;
+import responses.LoginResponse;
+import responses.LogoutResponse;
+import responses.RegisterUserResponse;
+import services.*;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Used for testing your code
@@ -8,6 +21,11 @@ import chess.*;
  */
 public class TestFactory {
 
+    static RegisterUserResponse testUser;
+
+    static String testUsername = "tchild01";
+    static String testPassword = "password";
+    static String testEmail = "childtanner@gmail.com";
     //Chess Functions
     //------------------------------------------------------------------------------------------------------------------
     public static ChessBoard getNewBoard(){
@@ -66,4 +84,76 @@ public class TestFactory {
         return 3000L;
     }
     //------------------------------------------------------------------------------------------------------------------
+    public static responses.CreateGameResponse createGame(boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+        if (correctAuth) {
+            CreateGameRequest createGameRequest = new CreateGameRequest(testUser.getAuthToken(), String.valueOf(CreateGameService.getCurrID()));
+            return new CreateGameService().createGame(createGameRequest);
+        } else {
+            CreateGameRequest createGameRequest = new CreateGameRequest("FakeAuth", String.valueOf(CreateGameService.getCurrID()));
+            return new CreateGameService().createGame(createGameRequest);
+        }
+    }
+
+    public static RegisterUserResponse createTestUser() throws ForbiddenException, BadRequestException, DataAccessException {
+
+        RegisterUserRequest request = new RegisterUserRequest(testUsername, testPassword, testEmail);
+        testUser = new RegisterUserService().registerUser(request);
+        return testUser;
+    }
+
+    public static responses.ListGamesResponse listGames(Boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+        if (correctAuth) {
+            ListGamesRequest listGamesRequest = new ListGamesRequest(testUser.getAuthToken());
+            return new ListGamesService().listGames(listGamesRequest);
+        } else {
+            ListGamesRequest listGamesRequest = new ListGamesRequest("Fake AuthToken");
+            return new ListGamesService().listGames(listGamesRequest);
+        }
+    }
+
+    public static void clearApplication() throws DataAccessException {
+        new ClearApplicationService().clearApplication(new ClearApplicationRequest(new AuthToken("UNIT_TESTS")));
+    }
+
+    public static JoinGameResponse joinGame(JoinGameRequest.PlayerColor color) throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException {
+        JoinGameRequest request = new JoinGameRequest(testUser.getAuthToken(), color, String.valueOf(CreateGameService.getCurrID()));
+        return new JoinGameService().joinGame(request);
+    }
+
+    public static LoginResponse login(boolean currectAuth) throws NotAuthorizedException, DataAccessException {
+        if (currectAuth) {
+            LoginRequest request = new LoginRequest(testUsername, testPassword);
+            return new LoginService().login(request);
+        } else {
+            LoginRequest request = new LoginRequest(testUsername, "WRONG_PASSWORD");
+            return new LoginService().login(request);
+        }
+    }
+
+    public static LogoutResponse logout(boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+        if (correctAuth) {
+            LogoutRequest request = new LogoutRequest(testUser.getAuthToken());
+            return new LogoutService().logout(request);
+        } else {
+            LogoutRequest request = new LogoutRequest("WRONG_AUTH");
+            return new LogoutService().logout(request);
+        }
+
+    }
+
+    public static String getTestUsername() {
+        return testUsername;
+    }
+
+    public static String getTestEmail() {
+        return testEmail;
+    }
+
+    public static String getTestPassword() {
+        return testPassword;
+    }
+
+    public static RegisterUserResponse getTestUser() {
+        return testUser;
+    }
 }
