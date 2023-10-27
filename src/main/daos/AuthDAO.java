@@ -11,6 +11,9 @@ import java.util.Map;
  */
 public class AuthDAO {
 
+    /**
+     * This static variable maps each user's authToken to their username
+     */
     public static Map<String, String> dictionary = new HashMap<>();
 
     /**
@@ -18,6 +21,7 @@ public class AuthDAO {
      *
      * @param token of the user we want to check
      * @return Boolean authorized or not
+     * @throws DataAccessException if error extracting data
      */
     public static Boolean IsAuthorized(String token) throws DataAccessException {
         return dictionary.containsKey(token);
@@ -27,6 +31,7 @@ public class AuthDAO {
      * Adds an AuthToken to the Database
      *
      * @param authToken to be added to the database
+     * @throws DataAccessException if error extracting data
      */
     public static void AddAuthToken(AuthToken authToken) throws DataAccessException {
         dictionary.put(authToken.getAuthToken(), authToken.getUserName());
@@ -44,9 +49,10 @@ public class AuthDAO {
     }
 
     /**
-     * Deletes the AuthToken of a given user from the Database
+     * Removes the user from Auth database when signing out
      *
-     * @param authToken of the AuthToken to be removed
+     * @param authToken of the user to be removed
+     * @throws DataAccessException if error extracting data
      */
     public void DeleteAuthToken(String authToken) throws DataAccessException, NotAuthorizedException {
         dictionary.remove(authToken);

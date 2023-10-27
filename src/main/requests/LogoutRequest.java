@@ -3,7 +3,7 @@ package requests;
 /**
  * class representing a request to logout
  */
-public class LogoutRequest extends Request {
+public class LogoutRequest {
 
     /**
      * token authorizing a user to sign out
@@ -13,10 +13,9 @@ public class LogoutRequest extends Request {
     /**
      * creates a request to logout of a game
      *
-     * @param authToken of user trying to logout
+     * @param authToken of user trying to log out
      */
     public LogoutRequest(String authToken) {
-        super(RequestMethods.DELETE);
         this.authToken = authToken;
     }
 

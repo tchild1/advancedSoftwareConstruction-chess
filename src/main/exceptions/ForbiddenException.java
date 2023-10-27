@@ -1,5 +1,8 @@
 package exceptions;
 
+/**
+ * This Exception represents a 403 error
+ */
 public class ForbiddenException extends Exception {
 
     /**

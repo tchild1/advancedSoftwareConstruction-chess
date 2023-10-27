@@ -28,6 +28,7 @@ public class JoinGameService {
             // check the game exists
             if (GameDAO.GameExists(request.getGameID())) {
                 String username = AuthDAO.GetUsername(request.getAuthToken());
+                // if not color, add as an observer
                 if (request.getPlayerColor() != null) {
                     GameDAO.AddPlayerToGame(request.getGameID(), request.getPlayerColor(), username);
                 } else {

@@ -3,7 +3,7 @@ package requests;
 /**
  * class representing a request to create a new game
  */
-public class CreateGameRequest extends Request {
+public class CreateGameRequest {
 
     /**
      * AuthToken authorizing this request
@@ -22,7 +22,6 @@ public class CreateGameRequest extends Request {
      * @param gameName name of the game being created
      */
     public CreateGameRequest(String authToken, String gameName) {
-        super(RequestMethods.POST);
         this.authToken = authToken;
         this.gameName = gameName;
     }

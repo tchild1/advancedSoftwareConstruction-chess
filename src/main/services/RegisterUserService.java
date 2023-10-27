@@ -30,6 +30,12 @@ public class RegisterUserService {
         return new RegisterUserResponse(newUser.getUsername(), authToken.getAuthToken());
     }
 
+    /**
+     * Ensures that a user entered all proper information to create their user
+     *
+     * @param newUser object with user's information
+     * @throws BadRequestException if not all information is present
+     */
     private void validateUserInformation(User newUser) throws BadRequestException {
         if (newUser.getUsername() == null ||
             newUser.getPassword() == null ||

@@ -5,7 +5,7 @@ import models.Game;
 import java.util.ArrayList;
 
 /**
- * response to a requset to list all games currently being played
+ * response to a request to list all games currently being played
  */
 public class ListGamesResponse extends Response {
 

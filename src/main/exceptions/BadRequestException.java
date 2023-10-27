@@ -1,5 +1,8 @@
 package exceptions;
 
+/**
+ * This exception represents a 400 error
+ */
 public class BadRequestException extends Exception{
 
     /**

@@ -1,12 +1,23 @@
 import handlers.*;
 import spark.Spark;
 
+/**
+ * Server class
+ */
 public class Server {
 
+    /**
+     * Starts the server
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         new Server().run();
     }
 
+    /**
+     * Runs servers and defines handlers for all requests
+     */
     private void run() {
         Spark.port(8080);
 

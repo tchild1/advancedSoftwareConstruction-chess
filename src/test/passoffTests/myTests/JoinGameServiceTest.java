@@ -1,5 +1,6 @@
 package passoffTests.myTests;
 
+import chess.ChessGame;
 import exceptions.BadRequestException;
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
@@ -29,17 +30,17 @@ class JoinGameServiceTest {
 
         // joining a game should not throw an exception
         assertDoesNotThrow(() -> {
-            TestFactory.joinGame(JoinGameRequest.PlayerColor.WHITE);
+            TestFactory.joinGame(ChessGame.TeamColor.WHITE);
         }, "Joining a game threw an error");
     }
 
     @Test
     void joinGameNegative() throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException {
-        TestFactory.joinGame(JoinGameRequest.PlayerColor.WHITE);
+        TestFactory.joinGame(ChessGame.TeamColor.WHITE);
 
         // try adding a second user to the same color
         assertThrowsExactly(ForbiddenException.class, () -> {
-            TestFactory.joinGame(JoinGameRequest.PlayerColor.WHITE);
+            TestFactory.joinGame(ChessGame.TeamColor.WHITE);
         }, "Should have thrown an error when trying to add two users to play white");
     }
 }

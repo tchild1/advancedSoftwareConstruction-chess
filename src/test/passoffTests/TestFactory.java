@@ -116,7 +116,7 @@ public class TestFactory {
         new ClearApplicationService().clearApplication(new ClearApplicationRequest(new AuthToken("UNIT_TESTS")));
     }
 
-    public static void joinGame(JoinGameRequest.PlayerColor color) throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException {
+    public static void joinGame(ChessGame.TeamColor color) throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException {
         JoinGameRequest request = new JoinGameRequest(testUser.getAuthToken(), color, String.valueOf(CreateGameService.getCurrID()));
         new JoinGameService().joinGame(request);
     }

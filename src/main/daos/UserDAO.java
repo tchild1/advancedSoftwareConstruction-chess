@@ -12,6 +12,9 @@ import java.util.Objects;
  */
 public class UserDAO {
 
+    /**
+     * This static variable maps each user's username to their user Object
+     */
     public static Map<String, User> users = new HashMap<>();
 
     /**
@@ -38,10 +41,11 @@ public class UserDAO {
     }
 
     /**
-     * Gets a single user from the database by their authToken
+     * Determines whether a User is Authenticated or not
      *
-     * @param Username of user to be retrieved
-     * @return user of the given Username
+     * @param Username of user
+     * @param Password of password
+     * @return boolean
      * @throws DataAccessException if there is an error, exception is thrown
      */
     public Boolean AuthenticateUser(String Username, String Password) throws DataAccessException {

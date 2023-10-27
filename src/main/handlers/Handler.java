@@ -8,8 +8,18 @@ import exceptions.NotAuthorizedException;
 import spark.Request;
 import spark.Response;
 
+/**
+ * Abstract parent class for all handler objects
+ */
 public abstract class Handler {
 
+    /**
+     * Method to handle ALL requests from the server and catch exceptions
+     *
+     * @param req Spark request
+     * @param res Spark response
+     * @return JSON response to server
+     */
     public String handler(Request req, Response res) {
         res.status(200);
         responses.Response response;
@@ -31,5 +41,18 @@ public abstract class Handler {
         return new Gson().toJson(response);
     }
 
-    protected abstract responses.Response handleRequest(Request req, Response res) throws DataAccessException, NotAuthorizedException, ForbiddenException, BadRequestException;
+    /**
+     * Abstract method implemented in all handler classes to convert JSON to a request and pass to
+     * respective service classes
+     *
+     * @param req Spark request
+     * @param res Spark response
+     * @return response object
+     * @throws DataAccessException if there is an error connecting to the database
+     * @throws NotAuthorizedException if the user is not authorized to make this request
+     * @throws ForbiddenException if the user makes a forbidden request
+     * @throws BadRequestException if the user's request is invalid
+     */
+    protected abstract responses.Response handleRequest(Request req, Response res)
+            throws DataAccessException, NotAuthorizedException, ForbiddenException, BadRequestException;
 }

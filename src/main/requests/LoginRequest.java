@@ -3,7 +3,7 @@ package requests;
 /**
  * class representing a request to login
  */
-public class LoginRequest extends Request {
+public class LoginRequest {
 
     /**
      * username of the user trying to sign in
@@ -22,7 +22,6 @@ public class LoginRequest extends Request {
      * @param password of the user attempting to log in
      */
     public LoginRequest(String username, String password) {
-        super(RequestMethods.POST);
         this.username = username;
         this.password = password;
     }

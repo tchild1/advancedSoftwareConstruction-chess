@@ -12,11 +12,11 @@ import responses.CreateGameResponse;
  * service for a request to create a new game
  */
 public class CreateGameService {
-    static public int currID;
 
-    public static int getCurrID() {
-        return currID;
-    }
+    /**
+     * Current Game ID (increments every game creation)
+     */
+    static public int currID;
 
     /**
      * Creates a new game after checking a user's AuthToken
@@ -35,6 +35,10 @@ public class CreateGameService {
         }
     }
 
+    /**
+     * Function that generates a new Game ID
+     * @return current Game ID
+     */
     private int GenerateGameID() {
         if (currID == 9999) {
             currID = 1111;
@@ -46,5 +50,9 @@ public class CreateGameService {
             currID++;
             return currID;
         }
+    }
+
+    public static int getCurrID() {
+        return currID;
     }
 }

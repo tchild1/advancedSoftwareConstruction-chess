@@ -1,22 +1,16 @@
 package requests;
 
+import chess.ChessGame;
+
 /**
  * class representing a request to join a game
  */
-public class JoinGameRequest extends Request {
-
-    /**
-     * enum of all potential player colors
-     */
-    public enum PlayerColor {
-        WHITE,
-        BLACK
-    }
+public class JoinGameRequest {
 
     /**
      * color the player requesting to join wishes to play
      */
-    PlayerColor playerColor;
+    ChessGame.TeamColor playerColor;
 
     /**
      * ID of the game the player wishes to join
@@ -35,8 +29,7 @@ public class JoinGameRequest extends Request {
      * @param playerColor color the user is requesting to be
      * @param gameID of the game the user wants to join
      */
-    public JoinGameRequest(String authToken, PlayerColor playerColor, String gameID) {
-        super(RequestMethods.PUT);
+    public JoinGameRequest(String authToken, ChessGame.TeamColor playerColor, String gameID) {
         this.authToken = authToken;
         this.playerColor = playerColor;
         this.gameID = gameID;
@@ -58,7 +51,7 @@ public class JoinGameRequest extends Request {
         this.gameID = gameID;
     }
 
-    public PlayerColor getPlayerColor() {
+    public ChessGame.TeamColor getPlayerColor() {
         return playerColor;
     }
 }

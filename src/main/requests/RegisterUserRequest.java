@@ -1,9 +1,9 @@
 package requests;
 
 /**
- * class representing a users request to create a new user
+ * class representing a user's request to create a new user
  */
-public class RegisterUserRequest extends Request {
+public class RegisterUserRequest {
 
     /**
      * username the user is requesting
@@ -29,7 +29,6 @@ public class RegisterUserRequest extends Request {
      * @param email user's email
      */
     public RegisterUserRequest(String username, String password, String email) {
-        super(RequestMethods.POST);
         this.username = username;
         this.password = password;
         this.email = email;

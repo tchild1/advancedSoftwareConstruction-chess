@@ -32,6 +32,9 @@ public class Game {
      */
     chess.Game game;
 
+    /**
+     * List of all users observing this game
+     */
     ArrayList<String> observers;
 
     /**
@@ -51,6 +54,11 @@ public class Game {
         this.observers = new ArrayList<>();
     }
 
+    /**
+     * adds a user to observers
+     *
+     * @param observer user to be added to observers
+     */
     public void addObservers(String observer) {
         this.observers.add(observer);
     }
