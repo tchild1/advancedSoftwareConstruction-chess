@@ -8,12 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
 import responses.LoginResponse;
+
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class LoginServiceTest {
 
     @BeforeEach
-    void setUp() throws DataAccessException, ForbiddenException, BadRequestException {
+    void setUp() throws DataAccessException, ForbiddenException, BadRequestException, SQLException, dataAccess.DataAccessException {
         // Get a fresh start
         TestFactory.clearApplication();
 
@@ -22,7 +25,7 @@ class LoginServiceTest {
     }
 
     @Test
-    void loginPositive() throws NotAuthorizedException, DataAccessException {
+    void loginPositive() throws NotAuthorizedException, DataAccessException, SQLException, dataAccess.DataAccessException {
 
         LoginResponse response =TestFactory.login(true);
 

@@ -7,6 +7,8 @@ import daos.UserDAO;
 import requests.ClearApplicationRequest;
 import responses.ClearApplicationResponse;
 
+import java.sql.SQLException;
+
 /**
  * service for requests to clear all application data
  */
@@ -19,7 +21,7 @@ public class ClearApplicationService {
      * @param request object with AuthToken and method of the request
      * @return returns a response object
      */
-    public ClearApplicationResponse clearApplication(ClearApplicationRequest request) throws DataAccessException {
+    public ClearApplicationResponse clearApplication(ClearApplicationRequest request) throws DataAccessException, SQLException, dataAccess.DataAccessException {
         new UserDAO().DeleteAllUsers();
         new AuthDAO().DeleteAllAuthTokens();
         new GameDAO().DeleteAllGames();

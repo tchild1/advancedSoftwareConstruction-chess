@@ -9,6 +9,8 @@ import exceptions.NotAuthorizedException;
 import requests.JoinGameRequest;
 import responses.JoinGameResponse;
 
+import java.sql.SQLException;
+
 /**
  * service for a request to join a game
  */
@@ -22,7 +24,7 @@ public class JoinGameService {
      * @param request object with player color and requested gameID
      * @return response with success or failure message
      */
-    public JoinGameResponse joinGame(JoinGameRequest request) throws DataAccessException, NotAuthorizedException, BadRequestException, ForbiddenException {
+    public JoinGameResponse joinGame(JoinGameRequest request) throws DataAccessException, NotAuthorizedException, BadRequestException, ForbiddenException, SQLException, dataAccess.DataAccessException {
         // check user is authorized
         if (AuthDAO.IsAuthorized(request.getAuthToken())) {
             // check the game exists

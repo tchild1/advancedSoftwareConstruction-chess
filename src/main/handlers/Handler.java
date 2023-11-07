@@ -8,6 +8,8 @@ import exceptions.NotAuthorizedException;
 import spark.Request;
 import spark.Response;
 
+import java.sql.SQLException;
+
 /**
  * Abstract parent class for all handler objects
  */
@@ -25,7 +27,7 @@ public abstract class Handler {
         responses.Response response;
         try {
             response = handleRequest(req, res);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | dataAccess.DataAccessException e) {
             res.status();
             response = new responses.Response(e.getMessage());
         } catch (NotAuthorizedException e) {
@@ -37,6 +39,8 @@ public abstract class Handler {
         } catch (BadRequestException e) {
             res.status(400);
             response = new responses.Response(e.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return new Gson().toJson(response);
     }
@@ -54,5 +58,5 @@ public abstract class Handler {
      * @throws BadRequestException if the user's request is invalid
      */
     protected abstract responses.Response handleRequest(Request req, Response res)
-            throws DataAccessException, NotAuthorizedException, ForbiddenException, BadRequestException;
+            throws DataAccessException, NotAuthorizedException, ForbiddenException, BadRequestException, SQLException, dataAccess.DataAccessException;
 }

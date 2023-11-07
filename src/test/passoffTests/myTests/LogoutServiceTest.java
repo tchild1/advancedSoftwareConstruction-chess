@@ -7,12 +7,15 @@ import exceptions.NotAuthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
+
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class LogoutServiceTest {
 
     @BeforeEach
-    void setUp() throws DataAccessException, ForbiddenException, BadRequestException {
+    void setUp() throws DataAccessException, ForbiddenException, BadRequestException, SQLException, dataAccess.DataAccessException {
         // Get a fresh start
         TestFactory.clearApplication();
 

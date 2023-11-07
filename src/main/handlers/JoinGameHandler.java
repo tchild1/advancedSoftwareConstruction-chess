@@ -11,6 +11,8 @@ import services.JoinGameService;
 import spark.Request;
 import spark.Response;
 
+import java.sql.SQLException;
+
 /**
  * Handler for all requests to join a game
  */
@@ -27,7 +29,7 @@ public class JoinGameHandler extends Handler {
      * @throws NotAuthorizedException if the request does not have proper authorization
      * @throws ForbiddenException if the Request is forbidden
      */
-    public JoinGameResponse handleRequest(Request req, Response res) throws DataAccessException, BadRequestException, NotAuthorizedException, ForbiddenException {
+    public JoinGameResponse handleRequest(Request req, Response res) throws DataAccessException, BadRequestException, NotAuthorizedException, ForbiddenException, SQLException, dataAccess.DataAccessException {
         JoinGameRequest request = new Gson().fromJson(req.body(), JoinGameRequest.class);
         request.setAuthToken(req.headers("Authorization"));
         return new JoinGameService().joinGame(request);

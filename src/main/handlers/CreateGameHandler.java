@@ -9,6 +9,8 @@ import services.CreateGameService;
 import spark.Request;
 import spark.Response;
 
+import java.sql.SQLException;
+
 /**
  * Handler class for requests to Create a new Game
  */
@@ -23,7 +25,7 @@ public class CreateGameHandler extends Handler {
      * @throws DataAccessException if there is an error accessing the Database
      * @throws NotAuthorizedException if the user is not authorized
      */
-    public CreateGameResponse handleRequest(Request req, Response res) throws DataAccessException, NotAuthorizedException {
+    public CreateGameResponse handleRequest(Request req, Response res) throws DataAccessException, NotAuthorizedException, SQLException, dataAccess.DataAccessException {
         CreateGameRequest request = new Gson().fromJson(req.body(), CreateGameRequest.class);
         request.setAuthToken(req.headers("Authorization"));
         return new CreateGameService().createGame(request);

@@ -7,12 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
 import responses.RegisterUserResponse;
+
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class RegisterUserServiceTest {
 
     @BeforeEach
-    void setUp() throws DataAccessException {
+    void setUp() throws DataAccessException, SQLException, dataAccess.DataAccessException {
         // Get a fresh start
         TestFactory.clearApplication();
     }
@@ -28,7 +31,7 @@ class RegisterUserServiceTest {
     }
 
     @Test
-    void registerUserNegative() throws ForbiddenException, BadRequestException, DataAccessException {
+    void registerUserNegative() throws ForbiddenException, BadRequestException, DataAccessException, SQLException, dataAccess.DataAccessException {
         TestFactory.createTestUser();
 
         assertThrowsExactly(ForbiddenException.class , TestFactory::createTestUser, "Registering the same user twice should have thrown an error");

@@ -11,6 +11,8 @@ import responses.LoginResponse;
 import responses.RegisterUserResponse;
 import services.*;
 
+import java.sql.SQLException;
+
 /**
  * Used for testing your code
  * Add in code using your classes for each method for each FIXME
@@ -85,7 +87,7 @@ public class TestFactory {
     //------------------------------------------------------------------------------------------------------------------
     // Below are functions I wrote to make my unit tests easy with less repeated code
     //------------------------------------------------------------------------------------------------------------------
-    public static responses.CreateGameResponse createGame(boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+    public static responses.CreateGameResponse createGame(boolean correctAuth) throws NotAuthorizedException, DataAccessException, SQLException, dataAccess.DataAccessException {
         CreateGameRequest createGameRequest;
         if (correctAuth) {
             createGameRequest = new CreateGameRequest(testUser.getAuthToken(), String.valueOf(CreateGameService.getCurrID()));
@@ -95,14 +97,14 @@ public class TestFactory {
         return new CreateGameService().createGame(createGameRequest);
     }
 
-    public static RegisterUserResponse createTestUser() throws ForbiddenException, BadRequestException, DataAccessException {
+    public static RegisterUserResponse createTestUser() throws ForbiddenException, BadRequestException, DataAccessException, SQLException, dataAccess.DataAccessException {
 
         RegisterUserRequest request = new RegisterUserRequest(testUsername, testPassword, testEmail);
         testUser = new RegisterUserService().registerUser(request);
         return testUser;
     }
 
-    public static responses.ListGamesResponse listGames(Boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+    public static responses.ListGamesResponse listGames(Boolean correctAuth) throws NotAuthorizedException, DataAccessException, SQLException, dataAccess.DataAccessException {
         ListGamesRequest listGamesRequest;
         if (correctAuth) {
             listGamesRequest = new ListGamesRequest(testUser.getAuthToken());
@@ -112,16 +114,16 @@ public class TestFactory {
         return new ListGamesService().listGames(listGamesRequest);
     }
 
-    public static void clearApplication() throws DataAccessException {
+    public static void clearApplication() throws DataAccessException, SQLException, dataAccess.DataAccessException {
         new ClearApplicationService().clearApplication(new ClearApplicationRequest(new AuthToken("UNIT_TESTS")));
     }
 
-    public static void joinGame(ChessGame.TeamColor color) throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException {
-        JoinGameRequest request = new JoinGameRequest(testUser.getAuthToken(), color, String.valueOf(CreateGameService.getCurrID()));
+    public static void joinGame(ChessGame.TeamColor color, String gameID) throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException, SQLException, dataAccess.DataAccessException {
+        JoinGameRequest request = new JoinGameRequest(testUser.getAuthToken(), color, gameID);
         new JoinGameService().joinGame(request);
     }
 
-    public static LoginResponse login(boolean currectAuth) throws NotAuthorizedException, DataAccessException {
+    public static LoginResponse login(boolean currectAuth) throws NotAuthorizedException, DataAccessException, SQLException, dataAccess.DataAccessException {
         LoginRequest request;
         if (currectAuth) {
             request = new LoginRequest(testUsername, testPassword);
@@ -131,7 +133,7 @@ public class TestFactory {
         return new LoginService().login(request);
     }
 
-    public static void logout(boolean correctAuth) throws NotAuthorizedException, DataAccessException {
+    public static void logout(boolean correctAuth) throws NotAuthorizedException, DataAccessException, SQLException, dataAccess.DataAccessException {
         LogoutRequest request;
         if (correctAuth) {
             request = new LogoutRequest(testUser.getAuthToken());

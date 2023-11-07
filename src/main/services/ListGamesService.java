@@ -7,6 +7,8 @@ import exceptions.NotAuthorizedException;
 import requests.ListGamesRequest;
 import responses.ListGamesResponse;
 
+import java.sql.SQLException;
+
 /**
  * service for a request to list all current games
  */
@@ -18,7 +20,7 @@ public class ListGamesService {
      * @param request request with AuthToken
      * @return response with a list of games
      */
-    public ListGamesResponse listGames(ListGamesRequest request) throws DataAccessException, NotAuthorizedException {
+    public ListGamesResponse listGames(ListGamesRequest request) throws DataAccessException, NotAuthorizedException, SQLException, dataAccess.DataAccessException {
         if (AuthDAO.IsAuthorized(request.getAuthToken())) {
             return new ListGamesResponse(GameDAO.GetAllGames());
         } else {

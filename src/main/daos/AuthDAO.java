@@ -3,18 +3,19 @@ package daos;
 import exceptions.DataAccessException;
 import exceptions.NotAuthorizedException;
 import models.AuthToken;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class provides access to authorization database tables
  */
 public class AuthDAO {
-
-    /**
-     * This static variable maps each user's authToken to their username
-     */
-    public static Map<String, String> dictionary = new HashMap<>();
 
     /**
      * Checks if a user is authorized by checking their authToken is in the database
@@ -23,8 +24,18 @@ public class AuthDAO {
      * @return Boolean authorized or not
      * @throws DataAccessException if error extracting data
      */
-    public static Boolean IsAuthorized(String token) throws DataAccessException {
-        return dictionary.containsKey(token);
+    public static Boolean IsAuthorized(String token) throws DataAccessException, dataAccess.DataAccessException, SQLException {
+        String sql = "SELECT token FROM chess.auth WHERE token=?;";
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, token);
+        ResultSet result = statement.executeQuery();
+
+        boolean response = result.next();
+        new Database().closeConnection(connection);
+
+        return response;
     }
 
     /**
@@ -33,8 +44,16 @@ public class AuthDAO {
      * @param authToken to be added to the database
      * @throws DataAccessException if error extracting data
      */
-    public static void AddAuthToken(AuthToken authToken) throws DataAccessException {
-        dictionary.put(authToken.getAuthToken(), authToken.getUserName());
+    public static void AddAuthToken(AuthToken authToken) throws DataAccessException, dataAccess.DataAccessException, SQLException {
+        String sql = "INSERT INTO chess.auth (username, token) VALUES (?, ?)";
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, authToken.getUserName());
+        statement.setString(2, authToken.getAuthToken());
+
+        statement.executeUpdate();
+        new Database().closeConnection(connection);
     }
 
     /**
@@ -44,8 +63,22 @@ public class AuthDAO {
      * @return username of the user with given authToken
      * @throws DataAccessException if error extracting data
      */
-    public static String GetUsername(String authToken) throws DataAccessException {
-        return dictionary.get(authToken);
+    public static String GetUsername(String authToken) throws DataAccessException, dataAccess.DataAccessException, SQLException {
+        String sql = "SELECT username FROM chess.auth WHERE token=?;";
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, authToken);
+        ResultSet result = statement.executeQuery();
+
+        String username;
+        if (result.next()) {
+            username = result.getString(1);
+        } else {
+            username = null;
+        }
+        new Database().closeConnection(connection);
+        return username;
     }
 
     /**
@@ -54,15 +87,28 @@ public class AuthDAO {
      * @param authToken of the user to be removed
      * @throws DataAccessException if error extracting data
      */
-    public void DeleteAuthToken(String authToken) throws DataAccessException, NotAuthorizedException {
-        dictionary.remove(authToken);
+    public void DeleteAuthToken(String authToken) throws DataAccessException, NotAuthorizedException, dataAccess.DataAccessException, SQLException {
+        String sql = "DELETE FROM chess.auth WHERE token=?;";
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, authToken);
+
+        statement.executeUpdate();
+        new Database().closeConnection(connection);
     }
 
     /**
      * Deletes all authTokens from the database
      * @throws DataAccessException thrown if error occurs when accessing data
      */
-    public void DeleteAllAuthTokens() throws DataAccessException {
-        dictionary.clear();
+    public void DeleteAllAuthTokens() throws DataAccessException, dataAccess.DataAccessException, SQLException {
+        String sql = "DELETE FROM chess.auth;";
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.executeUpdate();
+
+        new Database().closeConnection(connection);
     }
 }

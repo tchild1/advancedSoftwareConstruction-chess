@@ -8,6 +8,8 @@ import models.Game;
 import requests.CreateGameRequest;
 import responses.CreateGameResponse;
 
+import java.sql.SQLException;
+
 /**
  * service for a request to create a new game
  */
@@ -24,11 +26,10 @@ public class CreateGameService {
      * @param request object with AuthToken
      * @return response object with gameID
      */
-    public CreateGameResponse createGame(CreateGameRequest request) throws DataAccessException, NotAuthorizedException {
+    public CreateGameResponse createGame(CreateGameRequest request) throws DataAccessException, NotAuthorizedException, dataAccess.DataAccessException, SQLException {
         if (AuthDAO.IsAuthorized(request.getAuthToken())) {
-            int gameID = GenerateGameID();
-            Game game = new Game(gameID, null, null, request.getGameName());
-            GameDAO.CreateGame(game);
+            Game game = new Game(0, null, null, request.getGameName());
+            int gameID = GameDAO.CreateGame(game);
             return new CreateGameResponse(String.valueOf(gameID));
         } else {
             throw new NotAuthorizedException("Error: not authorized");

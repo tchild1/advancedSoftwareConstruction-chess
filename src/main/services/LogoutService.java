@@ -6,6 +6,8 @@ import exceptions.NotAuthorizedException;
 import requests.LogoutRequest;
 import responses.LogoutResponse;
 
+import java.sql.SQLException;
+
 /**
  * service for a request to logout
  */
@@ -17,7 +19,7 @@ public class LogoutService {
      * @param request object with User's AuthToken
      * @return object with message if failure
      */
-    public LogoutResponse logout(LogoutRequest request) throws DataAccessException, NotAuthorizedException {
+    public LogoutResponse logout(LogoutRequest request) throws DataAccessException, NotAuthorizedException, SQLException, dataAccess.DataAccessException {
         if (AuthDAO.IsAuthorized(request.getAuthToken())) {
             new AuthDAO().DeleteAuthToken(request.getAuthToken());
             return new LogoutResponse();

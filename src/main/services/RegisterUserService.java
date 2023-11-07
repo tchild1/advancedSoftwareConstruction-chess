@@ -10,6 +10,8 @@ import models.User;
 import requests.RegisterUserRequest;
 import responses.RegisterUserResponse;
 
+import java.sql.SQLException;
+
 /**
  * service for a request to register a new user
  */
@@ -21,7 +23,7 @@ public class RegisterUserService {
      * @param request object with user's information to be created in Database
      * @return returns an AuthToken and Username
      */
-    public RegisterUserResponse registerUser(RegisterUserRequest request) throws DataAccessException, ForbiddenException, BadRequestException {
+    public RegisterUserResponse registerUser(RegisterUserRequest request) throws DataAccessException, ForbiddenException, BadRequestException, SQLException, dataAccess.DataAccessException {
         User newUser = new User(request.getUsername(), request.getPassword(), request.getEmail());
         AuthToken authToken = new AuthToken(request.getUsername());
         validateUserInformation(newUser);

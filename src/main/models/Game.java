@@ -94,4 +94,8 @@ public class Game {
     public void setWhiteUsername(String whiteUsername) {
         this.whiteUsername = whiteUsername;
     }
+
+    public String getGameName() {
+        return gameName;
+    }
 }

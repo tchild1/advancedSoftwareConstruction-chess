@@ -9,6 +9,8 @@ import services.LoginService;
 import spark.Request;
 import spark.Response;
 
+import java.sql.SQLException;
+
 /**
  * Handler for all requests to log in
  */
@@ -23,7 +25,7 @@ public class LoginHandler extends Handler {
      * @throws DataAccessException if there is a problem connecting to the Database
      * @throws NotAuthorizedException if the request does not have proper authorization
      */
-    public LoginResponse handleRequest(Request req, Response res) throws DataAccessException, NotAuthorizedException {
+    public LoginResponse handleRequest(Request req, Response res) throws DataAccessException, NotAuthorizedException, SQLException, dataAccess.DataAccessException {
         LoginRequest request = new Gson().fromJson(req.body(), LoginRequest.class);
         return new LoginService().login(request);
     }

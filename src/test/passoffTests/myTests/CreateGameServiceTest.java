@@ -10,15 +10,18 @@ import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
 import requests.ClearApplicationRequest;;
 import responses.CreateGameResponse;
+import responses.Response;
 import services.ClearApplicationService;
 import services.CreateGameService;
+
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CreateGameServiceTest {
 
     @BeforeEach
-    void setUp() throws DataAccessException, ForbiddenException, BadRequestException {
+    void setUp() throws DataAccessException, ForbiddenException, BadRequestException, SQLException, dataAccess.DataAccessException {
         // get a fresh start
         new ClearApplicationService().clearApplication(new ClearApplicationRequest(new AuthToken("UNIT_TESTS")));
 
@@ -27,12 +30,9 @@ class CreateGameServiceTest {
     }
 
     @Test
-    void createGamePositive() throws NotAuthorizedException, DataAccessException {
-        CreateGameResponse response = TestFactory.createGame(true);
-        assertEquals(String.valueOf(CreateGameService.getCurrID()), response.getGameID(), "Game returned incorrect ID");
-
-        CreateGameResponse response2 = TestFactory.createGame(true);
-        assertEquals(String.valueOf(CreateGameService.getCurrID()), response2.getGameID(), "Game returned incorrect ID");
+    void createGamePositive() throws NotAuthorizedException, DataAccessException, SQLException, dataAccess.DataAccessException {
+        Response response = TestFactory.createGame(true);
+        assertEquals(null, response.getMessage(), "error message was returned");
     }
 
     @Test

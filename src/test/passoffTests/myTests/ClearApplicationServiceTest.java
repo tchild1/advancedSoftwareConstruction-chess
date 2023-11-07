@@ -11,12 +11,14 @@ import requests.*;
 import responses.ListGamesResponse;
 import services.*;
 
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClearApplicationServiceTest {
 
     @BeforeEach
-    void setUp() throws DataAccessException, ForbiddenException, BadRequestException, NotAuthorizedException {
+    void setUp() throws DataAccessException, ForbiddenException, BadRequestException, NotAuthorizedException, SQLException, dataAccess.DataAccessException {
         // Get a fresh start
         TestFactory.clearApplication();
 
@@ -25,7 +27,7 @@ class ClearApplicationServiceTest {
     }
 
     @Test
-    void clearApplication() throws DataAccessException, NotAuthorizedException, ForbiddenException, BadRequestException {
+    void clearApplication() throws DataAccessException, NotAuthorizedException, ForbiddenException, BadRequestException, SQLException, dataAccess.DataAccessException {
         // create game and list to check it exists
         TestFactory.createGame(true);
         ListGamesResponse listGamesResponse = TestFactory.listGames(true);
