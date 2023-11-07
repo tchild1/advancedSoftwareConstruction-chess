@@ -1,6 +1,7 @@
 package passoffTests;
 
 import chess.*;
+import daos.Database;
 import exceptions.BadRequestException;
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
@@ -11,6 +12,9 @@ import responses.LoginResponse;
 import responses.RegisterUserResponse;
 import services.*;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -149,5 +153,40 @@ public class TestFactory {
 
     public static RegisterUserResponse getTestUser() {
         return testUser;
+    }
+
+    public static boolean GetAuthFromDB(String username) throws SQLException, dataAccess.DataAccessException {
+        String sql = "SELECT * FROM chess.auth WHERE username='" + username + "';";
+        ResultSet results = getFromDB(sql);
+
+        return results.next();
+    }
+
+    private static ResultSet getFromDB(String sql) throws dataAccess.DataAccessException, SQLException {
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        return statement.executeQuery();
+    }
+
+    public static boolean GetGameFromDB(int GameID) throws SQLException, dataAccess.DataAccessException {
+        String sql = "SELECT * FROM chess.game WHERE game_id='" + String.valueOf(GameID) + "';";
+        ResultSet results = getFromDB(sql);
+
+        return results.next();
+    }
+
+    public static ResultSet GetGameInfoFromDB(int GameID) throws SQLException, dataAccess.DataAccessException {
+        String sql = "SELECT * FROM chess.game WHERE game_id='" + String.valueOf(GameID) + "';";
+        ResultSet results = getFromDB(sql);
+
+        return results;
+    }
+
+    public static ResultSet GetUserInfoFromDB(String username) throws SQLException, dataAccess.DataAccessException {
+        String sql = "SELECT * FROM chess.user WHERE username='" + username + "';";
+        ResultSet results = getFromDB(sql);
+
+        return results;
     }
 }

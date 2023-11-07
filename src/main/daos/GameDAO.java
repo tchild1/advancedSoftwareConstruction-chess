@@ -62,7 +62,7 @@ public class GameDAO {
      *
      * @throws DataAccessException if there is an error accessing the database, exception is thrown
      */
-    public void DeleteAllGames() throws DataAccessException, dataAccess.DataAccessException, SQLException {
+    public static void DeleteAllGames() throws DataAccessException, dataAccess.DataAccessException, SQLException {
         String sql = "DELETE FROM chess.game;";
         Connection connection = new Database().getConnection();
 
@@ -132,6 +132,7 @@ public class GameDAO {
 
             updateDatabaseGame(connection, gameID, game);
         }
+        new Database().closeConnection(connection);
     }
 
     /**
@@ -218,7 +219,7 @@ public class GameDAO {
         }
     }
 
-    private static GsonBuilder createBuilder() {
+    static GsonBuilder createBuilder() {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(models.Game.class, new ChessGameAdapter());
         builder.registerTypeAdapter(chess.Board.class, new ChessBoardAdapter());

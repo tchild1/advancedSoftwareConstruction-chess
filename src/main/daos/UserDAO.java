@@ -3,6 +3,7 @@ package daos;
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
 import models.User;
+import org.junit.jupiter.api.function.Executable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,9 +20,10 @@ public class UserDAO {
      * Creates a new user in the database
      *
      * @param newUser to be created
+     * @return
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public void CreateUser(User newUser) throws DataAccessException, ForbiddenException, dataAccess.DataAccessException, SQLException {
+    public static Executable CreateUser(User newUser) throws DataAccessException, ForbiddenException, dataAccess.DataAccessException, SQLException {
         String sqlCheck = "SELECT username FROM chess.user WHERE username=?;";
         Connection connection = new Database().getConnection();
 
@@ -43,6 +45,7 @@ public class UserDAO {
             statementUpdate.executeUpdate();
         }
         new Database().closeConnection(connection);
+        return null;
     }
 
     /**
@@ -50,7 +53,7 @@ public class UserDAO {
      *
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public void DeleteAllUsers() throws DataAccessException, dataAccess.DataAccessException, SQLException {
+    public static void DeleteAllUsers() throws DataAccessException, dataAccess.DataAccessException, SQLException {
         String sql = "DELETE FROM chess.user;";
         Connection connection = new Database().getConnection();
 
@@ -68,7 +71,7 @@ public class UserDAO {
      * @return boolean
      * @throws DataAccessException if there is an error, exception is thrown
      */
-    public Boolean AuthenticateUser(String Username, String Password) throws DataAccessException, dataAccess.DataAccessException, SQLException {
+    public static Boolean AuthenticateUser(String Username, String Password) throws DataAccessException, dataAccess.DataAccessException, SQLException {
         String sql = "SELECT username, password FROM chess.user WHERE username=?;";
         Connection connection = new Database().getConnection();
 

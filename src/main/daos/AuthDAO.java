@@ -87,7 +87,7 @@ public class AuthDAO {
      * @param authToken of the user to be removed
      * @throws DataAccessException if error extracting data
      */
-    public void DeleteAuthToken(String authToken) throws DataAccessException, NotAuthorizedException, dataAccess.DataAccessException, SQLException {
+    public static void DeleteAuthToken(String authToken) throws DataAccessException, NotAuthorizedException, dataAccess.DataAccessException, SQLException {
         String sql = "DELETE FROM chess.auth WHERE token=?;";
         Connection connection = new Database().getConnection();
 
@@ -102,7 +102,7 @@ public class AuthDAO {
      * Deletes all authTokens from the database
      * @throws DataAccessException thrown if error occurs when accessing data
      */
-    public void DeleteAllAuthTokens() throws DataAccessException, dataAccess.DataAccessException, SQLException {
+    public static void DeleteAllAuthTokens() throws DataAccessException, dataAccess.DataAccessException, SQLException {
         String sql = "DELETE FROM chess.auth;";
         Connection connection = new Database().getConnection();
 

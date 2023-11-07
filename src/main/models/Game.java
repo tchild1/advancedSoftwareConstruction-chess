@@ -63,6 +63,14 @@ public class Game {
         this.observers.add(observer);
     }
 
+    public ArrayList<String> getObservers() {
+        return observers;
+    }
+
+    public void setObservers(ArrayList<String> observers) {
+        this.observers = observers;
+    }
+
     public int getGameID() {
         return gameID;
     }
