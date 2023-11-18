@@ -5,11 +5,9 @@ import exceptions.BadRequestException;
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
 import exceptions.NotAuthorizedException;
-import models.Game;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
-import requests.JoinGameRequest;
 import responses.CreateGameResponse;
 
 import java.sql.SQLException;

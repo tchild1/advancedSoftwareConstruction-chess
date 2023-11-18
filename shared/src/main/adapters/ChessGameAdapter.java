@@ -1,6 +1,5 @@
-package daos;
+package adapters;
 
-import chess.ChessBoard;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import models.Game;

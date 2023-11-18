@@ -1,11 +1,10 @@
-package daos;
+package adapters;
 
-import chess.*;
-import com.google.gson.reflect.TypeToken;
+import chess.Board;
+import chess.Position;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 public class ChessBoardAdapter implements JsonDeserializer<chess.Board> {
     @Override

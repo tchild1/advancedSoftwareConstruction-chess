@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 public class Game implements ChessGame {
-    ChessBoard board;
+    Board board;
     TeamColor currentTurn;
 
     public Game() {
@@ -254,7 +254,7 @@ public class Game implements ChessGame {
     @Override
     public void setBoard(ChessBoard board) {
         this.board.clearBoard();
-        this.board = board;
+        this.board = (Board) board;
     }
 
     @Override

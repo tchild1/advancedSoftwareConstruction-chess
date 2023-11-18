@@ -1,6 +1,5 @@
 package services;
 
-import daos.AuthDAO;
 import exceptions.DataAccessException;
 import daos.UserDAO;
 import exceptions.NotAuthorizedException;

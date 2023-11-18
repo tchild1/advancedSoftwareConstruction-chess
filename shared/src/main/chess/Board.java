@@ -1,6 +1,6 @@
 package chess;
 
-public class Board  implements  ChessBoard {
+public class Board implements ChessBoard {
     ChessPiece[][] board;
 
     public Board() {

@@ -1,5 +1,8 @@
 package daos;
 
+import adapters.ChessBoardAdapter;
+import adapters.ChessGameAdapter;
+import adapters.ChessPieceAdapter;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -2,11 +2,9 @@ package daos;
 
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
-import exceptions.NotAuthorizedException;
 import models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import passoffTests.TestFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
