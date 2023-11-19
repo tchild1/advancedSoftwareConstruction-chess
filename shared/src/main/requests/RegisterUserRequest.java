@@ -3,7 +3,7 @@ package requests;
 /**
  * class representing a user's request to create a new user
  */
-public class RegisterUserRequest {
+public class RegisterUserRequest extends Request {
 
     /**
      * username the user is requesting

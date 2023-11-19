@@ -5,7 +5,7 @@ import models.AuthToken;
 /**
  * Class representing a request to clear all application data
  */
-public class ClearApplicationRequest {
+public class ClearApplicationRequest extends Request {
 
     /**
      * AuthToken authorizing this request

@@ -145,8 +145,9 @@ public class GameDAO {
      * @throws DataAccessException if there is an error, exception is thrown
      */
     public static ArrayList<Game> GetAllGames() throws DataAccessException, dataAccess.DataAccessException, SQLException {
-        String sql = "SELECT game, game_id " +
-                     "FROM chess.game ";
+        String sql = "SELECT game, game_id, black_username, white_username " +
+                     "FROM chess.game " +
+                     "ORDER BY game_id asc";
         Connection connection = new Database().getConnection();
 
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -157,6 +158,9 @@ public class GameDAO {
         while (result.next()) {
             String json = result.getString(1);
             int ID = result.getInt(2);
+            String blackUsername = result.getString(3);
+            String whiteUsername = result.getString(4);
+
             GsonBuilder builder = new GsonBuilder();
             builder.registerTypeAdapter(models.Game.class, new ChessGameAdapter());
             builder.registerTypeAdapter(chess.Board.class, new ChessBoardAdapter());
@@ -164,6 +168,8 @@ public class GameDAO {
 
             models.Game game = builder.create().fromJson(json, models.Game.class);
             game.setGameID(ID);
+            game.setWhiteUsername(whiteUsername);
+            game.setBlackUsername(blackUsername);
             allGames.add(game);
         }
         Collections.reverse(allGames);

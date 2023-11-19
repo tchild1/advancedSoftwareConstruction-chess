@@ -19,7 +19,8 @@ public class Server {
      * Runs servers and defines handlers for all requests
      */
     private void run() {
-        Spark.port(8080);
+        int PORT = 8080;
+        Spark.port(PORT);
 
         Spark.externalStaticFileLocation("web");
 
@@ -38,5 +39,7 @@ public class Server {
         Spark.put("/game", (req, res) -> new JoinGameHandler().handler(req, res));
 
         Spark.init();
+
+        System.out.println("Server is running on port: " + PORT);
     }
 }

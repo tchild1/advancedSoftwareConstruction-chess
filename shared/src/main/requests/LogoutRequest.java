@@ -3,7 +3,7 @@ package requests;
 /**
  * class representing a request to logout
  */
-public class LogoutRequest {
+public class LogoutRequest extends Request {
 
     /**
      * token authorizing a user to sign out

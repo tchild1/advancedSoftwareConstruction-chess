@@ -3,7 +3,7 @@ package requests;
 /**
  * class representing a request to login
  */
-public class LoginRequest {
+public class LoginRequest extends Request {
 
     /**
      * username of the user trying to sign in

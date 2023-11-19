@@ -3,7 +3,7 @@ package requests;
 /**
  * class representing a request to create a new game
  */
-public class CreateGameRequest {
+public class CreateGameRequest extends Request {
 
     /**
      * AuthToken authorizing this request

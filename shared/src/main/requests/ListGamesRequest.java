@@ -3,7 +3,7 @@ package requests;
 /**
  * class representing a request to list all games currently being played
  */
-public class ListGamesRequest {
+public class ListGamesRequest extends Request {
 
     /**
      * Token authorizing a user to list all games currently being played

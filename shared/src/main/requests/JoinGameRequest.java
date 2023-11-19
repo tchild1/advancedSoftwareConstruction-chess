@@ -5,7 +5,7 @@ import chess.ChessGame;
 /**
  * class representing a request to join a game
  */
-public class JoinGameRequest {
+public class JoinGameRequest extends Request {
 
     /**
      * color the player requesting to join wishes to play
