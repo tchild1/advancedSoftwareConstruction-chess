@@ -7,25 +7,4 @@ import models.AuthToken;
  */
 public class ClearApplicationRequest extends Request {
 
-    /**
-     * AuthToken authorizing this request
-     */
-    AuthToken authToken;
-
-    /**
-     * Constructor creating a ClearApplicationRequest object
-     *
-     * @param token AuthToken of the user making the request
-     */
-    public ClearApplicationRequest(AuthToken token) {
-        this.authToken = token;
-    }
-
-    public AuthToken getAuthToken() {
-        return authToken;
-    }
-
-    public void setAuthToken(AuthToken authToken) {
-        this.authToken = authToken;
-    }
 }

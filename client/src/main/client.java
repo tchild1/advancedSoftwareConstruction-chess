@@ -90,10 +90,22 @@ public class client {
             } else {
                 System.out.println("Must be logged in to join a game.");
             }
+        } else if (Objects.equals(input, "clear")) {
+            userEnteredClear();
         } else {
             System.out.println("Command not recognized. Please enter a valid command.");
         }
         return true;
+    }
+
+    private static void userEnteredClear() throws IOException, InterruptedException {
+        HttpResponse<String> response = makeRequest("/db", "DELETE", new ClearApplicationRequest());
+
+        if (response.statusCode() == 200) {
+            System.out.println("Database cleared.");
+        } else {
+            System.out.println("Error occurred clearing the database. ");
+        }
     }
 
     private static void userEnteredJoin() throws IOException, InterruptedException {
@@ -236,11 +248,19 @@ public class client {
                         .build();
             }
         } else if (Objects.equals(method, "DELETE")) {
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080"+route))
-                    .DELETE()
-                    .header("Authorization", tokenString)
-                    .build();
+            if (isAuthenticated()) {
+                request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080"+route))
+                        .DELETE()
+                        .header("Authorization", tokenString)
+                        .build();
+            } else {
+                request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080"+route))
+                        .DELETE()
+                        .build();
+            }
+
         } else if (Objects.equals(method, "GET")) {
             request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080"+route))
