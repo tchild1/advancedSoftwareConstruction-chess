@@ -1,7 +1,7 @@
 package chess;
 
 public class Board implements ChessBoard {
-    ChessPiece[][] board;
+    public ChessPiece[][] board;
 
     public Board() {
         board = new ChessPiece[8][8];
