@@ -1,4 +1,4 @@
-package passoffTests.myTests;
+package serviceTests;
 
 import chess.ChessGame;
 import exceptions.BadRequestException;

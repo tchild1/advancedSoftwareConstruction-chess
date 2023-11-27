@@ -2,6 +2,7 @@ package services;
 
 import exceptions.DataAccessException;
 import daos.UserDAO;
+import daos.AuthDAO;
 import exceptions.NotAuthorizedException;
 import models.AuthToken;
 import requests.LoginRequest;
@@ -23,7 +24,7 @@ public class LoginService {
     public LoginResponse login(LoginRequest request) throws DataAccessException, NotAuthorizedException, SQLException, dataAccess.DataAccessException {
          if (new UserDAO().AuthenticateUser(request.getUsername(), request.getPassword())) {
              AuthToken token = new AuthToken(request.getUsername());
-//             AuthDAO.AddAuthToken(token);
+             AuthDAO.AddAuthToken(token);
              return new LoginResponse(token.getAuthToken(), request.getUsername());
          } else {
             throw new NotAuthorizedException("Error: unauthorized");

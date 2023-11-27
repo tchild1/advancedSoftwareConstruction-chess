@@ -3,12 +3,14 @@ import chess.ChessGame;
 import chess.ChessPiece;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class client {
 
     private static String tokenString = null;
+    private static Scanner Scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -27,10 +29,16 @@ public class client {
         }
     }
 
-    private static boolean handleUserInput(String input) throws IOException, InterruptedException {
+    private static boolean handleUserInput(String i) throws IOException, InterruptedException {
+        var tokens = i.toLowerCase().split(" ");
+        var input = (tokens.length > 0) ? tokens[0] : "help";
+        var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+
         if (Objects.equals(input, "register")) {
             if (!isAuthenticated()) {
-                ServerFacade.userEnteredRegister();
+                if (checkParameters(params, 3)) {
+                    System.out.println(ServerFacade.userEnteredRegister(params[0], params[1], params[2]));
+                }
             } else {
                 System.out.println("Cannot register a user while logged in.");
             }
@@ -38,34 +46,40 @@ public class client {
             if (isAuthenticated()) {
                 System.out.println("Cannot log in while logged in.");
             } else {
-                ServerFacade.userEnteredLogin();
+                if (checkParameters(params, 2)) {
+                    System.out.println(ServerFacade.userEnteredLogin(params[0], params[1]));
+                }
             }
         } else if (Objects.equals(input, "quit")) {
             System.out.println("Thanks for playing!");
             return false;
         } else if (Objects.equals(input, "help")) {
-            ServerFacade.userEnteredHelp();
+            System.out.println(ServerFacade.userEnteredHelp());
         } else if (Objects.equals(input, "logout")) {
             if (isAuthenticated()) {
-                ServerFacade.userEnteredLogout();
+                System.out.println(ServerFacade.userEnteredLogout());
             } else {
                 System.out.println("Cannot log out without being logged in.");
             }
         } else if (Objects.equals(input, "create")) {
             if (isAuthenticated()) {
-                ServerFacade.userEnteredCreateGame();
+                if (checkParameters(params, 1)) {
+                    System.out.println(ServerFacade.userEnteredCreateGame(params[0]));
+                }
             } else {
                 System.out.println("Must be logged in to create a game.");
             }
         } else if (Objects.equals(input, "list")) {
             if (isAuthenticated()) {
-                ServerFacade.userEnteredListGames();
+                System.out.println(ServerFacade.userEnteredListGames());
             } else {
                 System.out.println("Must be logged in to list games.");
             }
         } else if (Objects.equals(input, "join")) {
             if (isAuthenticated()) {
-                ServerFacade.userEnteredJoin();
+                if (checkParameters(params, 2)) {
+                    System.out.println(ServerFacade.userEnteredJoin(params[0], params[1]));
+                }
             } else {
                 System.out.println("Must be logged in to join a game.");
             }
@@ -77,8 +91,19 @@ public class client {
         return true;
     }
 
+    private static boolean checkParameters(String[] params, int numNeeded) {
+        if (params.length < numNeeded) {
+            System.out.println("Missing Parameters! ");
+            return false;
+        } else if (params.length > numNeeded) {
+            System.out.println("Too many parameters! ");
+            return false;
+        }
+        return true;
+    }
+
     static Scanner getUserInput() {
-        return new Scanner(System.in);
+        return Scanner;
     }
 
     static boolean isAuthenticated() {

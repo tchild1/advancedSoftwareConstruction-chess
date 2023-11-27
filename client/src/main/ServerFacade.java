@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import models.Game;
 import requests.*;
+import responses.CreateGameResponse;
 import responses.ListGamesResponse;
 import responses.LoginResponse;
 import responses.RegisterUserResponse;
@@ -32,19 +33,12 @@ public class ServerFacade {
         }
     }
 
-    public static void userEnteredJoin() throws IOException, InterruptedException {
-        userEnteredListGames();
-
-        System.out.println("Please enter the ID of the game you would like to join: ");
-        String gameToJoin = client.getUserInput().next();
-
-        System.out.println("What color would you like to play? [W/B/O])");
-        String colorToPlay = client.getUserInput().next();
+    public static String userEnteredJoin(String gameToJoin, String colorToPlay) throws IOException, InterruptedException {
 
         ChessGame.TeamColor requestColor;
-        if (Objects.equals(colorToPlay, "W")) {
+        if (Objects.equals(colorToPlay, "w")) {
             requestColor = ChessGame.TeamColor.WHITE;
-        } else if (Objects.equals(colorToPlay, "B")) {
+        } else if (Objects.equals(colorToPlay, "b")) {
             requestColor = ChessGame.TeamColor.BLACK;
         } else {
             requestColor = null;
@@ -53,7 +47,6 @@ public class ServerFacade {
         HttpResponse<String> response = makeRequest("/game", "PUT", new JoinGameRequest(client.getTokenString(), requestColor, gameToJoin));
 
         if (response.statusCode() == 200) {
-            System.out.println("Added to game " + gameToJoin + " Successfully");
             System.out.print("\n");
 
             Board board = new Board();
@@ -62,12 +55,13 @@ public class ServerFacade {
             System.out.print("\n");
             System.out.print("\n");
             Display.printChessboardForWhite(board);
+            return "Added to game " + gameToJoin + " Successfully";
         } else {
-            System.out.println("Failed to add user to game.");
+            return "Failed to add user to game.";
         }
     }
 
-    public static void userEnteredListGames() throws IOException, InterruptedException {
+    public static String userEnteredListGames() throws IOException, InterruptedException {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(models.Game.class, new ChessGameAdapter());
         builder.registerTypeAdapter(chess.Board.class, new ChessBoardAdapter());
@@ -77,111 +71,103 @@ public class ServerFacade {
         HttpResponse<String> response = makeRequest("/game", "GET", new ListGamesRequest(client.getTokenString()));
 
         if (response.statusCode() != 200) {
-            System.out.println("Problem occurred when listing games.");
+            return "Problem occurred when listing games.";
         } else {
             ListGamesResponse games = builder.create().fromJson(response.body(), ListGamesResponse.class);
             ArrayList<Game> allGames = games.getGames();
-
-            System.out.println("All Games: ");
+            StringBuilder gamesList = new StringBuilder();
+            gamesList.append("All Games: \n"); 
             for (Game currGame : allGames) {
-                System.out.println("    Game ID: " + currGame.getGameID());
-                System.out.println("    Game Name: " + currGame.getGameName());
+                gamesList.append("    Game ID: " + currGame.getGameID() + "\n");
+                gamesList.append("    Game Name: " + currGame.getGameName() + "\n");
                 if (currGame.getWhiteUsername() != null) {
-                    System.out.println("    White Player: " + currGame.getWhiteUsername());
+                    gamesList.append("    White Player: " + currGame.getWhiteUsername() + "\n");
                 } else {
-                    System.out.println("    White Player: [NONE]");
+                    gamesList.append("    White Player: [NONE]" + "\n");
                 }
                 if (currGame.getBlackUsername() != null) {
-                    System.out.println("    Black Player: " + currGame.getBlackUsername());
+                    gamesList.append("    Black Player: " + currGame.getBlackUsername() + "\n");
                 } else {
-                    System.out.println("    Black Player: [NONE]");
+                    gamesList.append("    Black Player: [NONE]" + "\n");
                 }
-                System.out.println();
+                gamesList.append("\n");
             }
-            System.out.println();
+
+            gamesList.append("\n");
+            return gamesList.toString();
         }
     }
 
-    public static void userEnteredCreateGame() throws IOException, InterruptedException {
-        System.out.println("Please enter the game's name: ");
-        String gameName = client.getUserInput().next();
+    public static String userEnteredCreateGame(String gameName) throws IOException, InterruptedException {
         HttpResponse<String> response = makeRequest("/game", "POST", new CreateGameRequest(client.getTokenString(), gameName));
 
+        CreateGameResponse createGameResponse = new Gson().fromJson(response.body(), CreateGameResponse.class);
+
         if (response.statusCode() != 200) {
-            System.out.println("Error occurred when creating game. ");
+            return "Error occurred when creating game.";
         } else {
-            System.out.println("Game created. ");
+            return gameName + " " + createGameResponse.getGameID() + " created.";
         }
     }
 
-    public static void userEnteredLogout() throws IOException, InterruptedException {
+    public static String userEnteredLogout() throws IOException, InterruptedException {
         HttpResponse<String> response = makeRequest("/session", "DELETE", null);
 
         if (response.statusCode() == 200) {
             client.setTokenString(null);
+            return "Logout successful.";
         } else {
-            System.out.println("There was an error logging out.");
+            return "There was an error logging out.";
         }
     }
 
-    public static void userEnteredRegister() throws IOException, InterruptedException {
-        System.out.println("Please enter your username: ");
-        String username = client.getUserInput().nextLine();
-
-        System.out.println("Please enter your password: ");
-        String password = client.getUserInput().nextLine();
-
-        System.out.println("Please enter your email: ");
-        String email = client.getUserInput().nextLine();
-
+    public static String userEnteredRegister(String username, String password, String email) throws IOException, InterruptedException {
         HttpResponse<String> response = makeRequest("/user", "POST", new RegisterUserRequest(username, password, email));
 
         if (response.statusCode() == 200) {
             RegisterUserResponse registerUserResponse = new Gson().fromJson(response.body(), RegisterUserResponse.class);
             client.setTokenString(registerUserResponse.getAuthToken());
+            return "New User " + username + " was created.";
         } else {
-            System.out.println("There was an error registering user.");
+            return "There was an error registering user.";
         }
     }
 
-    public static void userEnteredLogin() throws IOException, InterruptedException {
-        System.out.println("Please enter your username: ");
-        String username = client.getUserInput().nextLine();
-
-        System.out.println("Please enter your password: ");
-        String password = client.getUserInput().nextLine();
-
+    public static String userEnteredLogin(String username, String password) throws IOException, InterruptedException {
         HttpResponse<String> response = makeRequest("/session", "POST", new LoginRequest(username, password));
 
         if (response.statusCode() == 200) {
             LoginResponse loginResponse = new Gson().fromJson(response.body(), LoginResponse.class);
             client.setTokenString(loginResponse.getToken());
+            return username + " is signed in.";
         } else {
-            System.out.println("There was an error logging in. ");
+            return "There was an error logging in.";
         }
     }
 
-    public static void userEnteredHelp() {
+    public static String userEnteredHelp() {
+        StringBuilder returnString = new StringBuilder();
         if (!client.isAuthenticated()) {
-            System.out.println("\nOptions:");
-            System.out.println("register - to create an account");
-            System.out.println("login - to play chess");
-            System.out.println("quit - stop playing chess");
-            System.out.println("help - with possible commands");
-            System.out.println();
+            returnString.append("\nOptions:\n");
+            returnString.append("register <username> <password> <email> - to create an account\n");
+            returnString.append("login <username> <password> - to play chess\n");
+            returnString.append("quit - stop playing chess\n");
+            returnString.append("help - with possible commands\n");
+            returnString.append("\n");
         } else {
-            System.out.println("\nOptions:");
-            System.out.println("create - a game");
-            System.out.println("list - games");
-            System.out.println("join - a game");
-            System.out.println("logout - when you are done");
-            System.out.println("quit - playing chess");
-            System.out.println("help - with possible commands");
-            System.out.println();
+            returnString.append("\nOptions:\n");
+            returnString.append("create <game name> - a game\n");
+            returnString.append("list - games\n");
+            returnString.append("join <game ID> <W/B/O> - a game\n");
+            returnString.append("logout - when you are done\n");
+            returnString.append("quit - playing chess\n");
+            returnString.append("help - with possible commands\n");
+            returnString.append("\n");
         }
+        return returnString.toString();
     }
 
-    private static HttpResponse<String> makeRequest(String route, String method, Request body) throws IOException, InterruptedException {
+    public static HttpResponse<String> makeRequest(String route, String method, Request body) throws IOException, InterruptedException {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 

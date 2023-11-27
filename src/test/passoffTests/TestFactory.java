@@ -119,7 +119,7 @@ public class TestFactory {
     }
 
     public static void clearApplication() throws DataAccessException, SQLException, dataAccess.DataAccessException {
-        new ClearApplicationService().clearApplication(new ClearApplicationRequest(new AuthToken("UNIT_TESTS")));
+        new ClearApplicationService().clearApplication(new ClearApplicationRequest());
     }
 
     public static void joinGame(ChessGame.TeamColor color, String gameID) throws ForbiddenException, BadRequestException, NotAuthorizedException, DataAccessException, SQLException, dataAccess.DataAccessException {

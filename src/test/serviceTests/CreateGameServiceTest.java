@@ -1,10 +1,9 @@
-package passoffTests.myTests;
+package serviceTests;
 
 import exceptions.BadRequestException;
 import exceptions.DataAccessException;
 import exceptions.ForbiddenException;
 import exceptions.NotAuthorizedException;
-import models.AuthToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import passoffTests.TestFactory;
@@ -22,7 +21,7 @@ class CreateGameServiceTest {
     @BeforeEach
     void setUp() throws DataAccessException, ForbiddenException, BadRequestException, SQLException, dataAccess.DataAccessException {
         // get a fresh start
-        new ClearApplicationService().clearApplication(new ClearApplicationRequest(new AuthToken("UNIT_TESTS")));
+        new ClearApplicationService().clearApplication(new ClearApplicationRequest());
 
         // create test user for Authorization
         TestFactory.createTestUser();

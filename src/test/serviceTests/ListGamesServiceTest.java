@@ -1,4 +1,4 @@
-package passoffTests.myTests;
+package serviceTests;
 
 import exceptions.BadRequestException;
 import exceptions.DataAccessException;
