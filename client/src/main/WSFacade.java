@@ -1,7 +1,9 @@
 import adapters.*;
 import chess.Board;
+import chess.Game;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.NotificationMessage;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -42,7 +44,7 @@ public class WSFacade extends Endpoint {
 
                     switch (serverMessage.getServerMessageType()) {
                         case LOAD_GAME -> loadGame((LoadGameMessage) serverMessage, response);
-                        case ERROR -> error();
+                        case ERROR -> error((ErrorMessage) serverMessage, response);
                         case NOTIFICATION -> notification((NotificationMessage) serverMessage, response);
                     }
                 }
@@ -65,16 +67,21 @@ public class WSFacade extends Endpoint {
     }
 
     private void loadGame(LoadGameMessage gameMessage, CompletableFuture<String> response) {
-        client.setCurrBoard((Board) gameMessage.getGame().getGame().getBoard());
-        Display.printChessBoard(client.getUserColor(), client.getCurrBoard());
+        client.setCurrBoard(gameMessage.getGame().getGame());
+        Display.printChessBoard(client.getUserColor(), (Board) client.getCurrBoard().getBoard());
         if (response != null) {
             response.complete(null);
             responseMap.remove(gameMessage.getRequestId());
         }
     }
 
-    private void error() {
-
+    private void error(ErrorMessage errorMessage, CompletableFuture<String> response) {
+        System.out.println('\n' + errorMessage.getMessage());
+        if (response != null) {
+            response.complete(null);
+            responseMap.remove(errorMessage.getRequestId());
+        }
+        client.printPrompt();
     }
 
     private void notification(NotificationMessage notificationMessage, CompletableFuture<String> response) {
@@ -83,6 +90,7 @@ public class WSFacade extends Endpoint {
             response.complete(null);
             responseMap.remove(notificationMessage.getRequestId());
         }
+        client.printPrompt();
     }
 
     private static GsonBuilder createBuilder() {

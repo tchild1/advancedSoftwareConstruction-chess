@@ -3,6 +3,7 @@ import adapters.ChessGameAdapter;
 import adapters.ChessPieceAdapter;
 import adapters.ListGamesAdapter;
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.Move;
 import chess.Position;
 import com.google.gson.Gson;
@@ -21,6 +22,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -71,7 +73,7 @@ public class ServerFacade {
             }
 
 
-            return "Added to game " + gameToJoin + " Successfully";
+            return "\nAdded to game " + gameToJoin + " Successfully";
         } else {
             return "Failed to add user to game.";
         }
@@ -169,7 +171,7 @@ public class ServerFacade {
         CompletableFuture<String> WSResponse = client.getGameConnection().sendCommandAndWaitForResponse(new MakeMoveCommand(client.getTokenString(), client.getGameID(), new Move(from, to, null), client.getUserName()));
         WSResponse.get();
 
-        return "You have moved to " + moveTo + " successfully";
+        return "";
     }
 
     public static String userEnteredLeave() throws ExecutionException, InterruptedException, IOException {
@@ -236,11 +238,11 @@ public class ServerFacade {
         } else {
             if (client.isInGame()) {
                 returnString.append("\nOptions:\n");
-                returnString.append("redraw chess board\n");
+                returnString.append("redraw\n");
                 returnString.append("leave - the game\n");
-                returnString.append("make move\n");
+                returnString.append("makemove <from square> <to square>\n");
                 returnString.append("resign - from game\n");
-                returnString.append("highlight legal moves\n");
+                returnString.append("highlight - <piece to highlight moves>\n");
                 returnString.append("help - with possible commands\n");
                 returnString.append("\n");
             } else {
@@ -257,8 +259,11 @@ public class ServerFacade {
         return returnString.toString();
     }
 
-    public void userEnteredHighlight() {
+    public static void userEnteredHighlight(String coordinate) {
+        Position position =  inputToPosition(coordinate);
+        Collection<ChessMove> validMoves = client.getCurrBoard().validMoves(position);
 
+        Display.highlightMoves(client.getCurrBoard().getBoard(), validMoves, client.getUserColor());
     }
 
     private static HttpResponse<String> makeRequest(String route, String method, Request body) throws IOException, InterruptedException {

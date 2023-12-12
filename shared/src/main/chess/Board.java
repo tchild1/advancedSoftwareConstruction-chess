@@ -77,12 +77,12 @@ public class Board implements ChessBoard {
         addPiece(new Position(7, 5), new BishopPiece(ChessGame.TeamColor.BLACK));
 
         // set all kings
-        addPiece(new Position(0, 4), new KingPiece(ChessGame.TeamColor.WHITE));
-        addPiece(new Position(7, 4), new KingPiece(ChessGame.TeamColor.BLACK));
+        addPiece(new Position(0, 3), new KingPiece(ChessGame.TeamColor.WHITE));
+        addPiece(new Position(7, 3), new KingPiece(ChessGame.TeamColor.BLACK));
 
         // set all queens
-        addPiece(new Position(0, 3), new QueenPiece(ChessGame.TeamColor.WHITE));
-        addPiece(new Position(7, 3), new QueenPiece(ChessGame.TeamColor.BLACK));
+        addPiece(new Position(0, 4), new QueenPiece(ChessGame.TeamColor.WHITE));
+        addPiece(new Position(7, 4), new QueenPiece(ChessGame.TeamColor.BLACK));
     }
 
     public void clearBoard() {

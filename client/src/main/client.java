@@ -1,6 +1,8 @@
 
 import chess.Board;
+import chess.ChessBoard;
 import chess.ChessGame;
+import chess.Game;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -20,19 +22,22 @@ public class client {
 
         boolean cont = true;
         while (cont) {
-            if (!isAuthenticated()) {
-                System.out.print("[LOGGED OUT] Enter a command or 'help' to see command options >>> ");
-            } else {
-                if (isInGame()) {
-//                    Display.printChessBoard(getUserColor(), gameState.getCurrBoard());
-                    System.out.print("[IN GAME] Enter a command or 'help' to see command options >>> ");
-                } else {
-                    System.out.print("[LOGGED IN] Enter a command or 'help' to see command options >>> ");
-                }
-            }
+            printPrompt();
 
             String userInput = getUserInput().nextLine();
             cont = handleUserInput(userInput);
+        }
+    }
+
+    public static void printPrompt() {
+        if (!isAuthenticated()) {
+            System.out.print("[LOGGED OUT] Enter a command or 'help' to see command options >>> ");
+        } else {
+            if (isInGame()) {
+                System.out.print("[IN GAME] Enter a command or 'help' to see command options >>> ");
+            } else {
+                System.out.print("[LOGGED IN] Enter a command or 'help' to see command options >>> ");
+            }
         }
     }
 
@@ -93,7 +98,7 @@ public class client {
         } else if (Objects.equals(input, "clear")) {
             ServerFacade.userEnteredClear();
         } else if (Objects.equals(input, "redraw")) {
-            Display.printChessBoard(client.getUserColor(), client.getCurrBoard());
+            Display.printChessBoard(client.getUserColor(),(Board) client.getCurrBoard().getBoard());
         } else if (Objects.equals(input, "leave")) {
             if (isInGame()) {
                 if (checkParameters(params, 0)) {
@@ -120,7 +125,13 @@ public class client {
                 System.out.println("You must be in a game to resign.");
             }
         } else if (Objects.equals(input, "highlight")) {
-            System.out.println(ServerFacade.userEnteredHighlight());
+            if (isInGame()) {
+                if (checkParameters(params, 1)) {
+                    ServerFacade.userEnteredHighlight(params[0]);
+                }
+            } else {
+                System.out.println("You must be in a game to see valid moves! ");
+            }
         } else {
             System.out.println("Command not recognized. Please enter a valid command.");
         }
@@ -166,12 +177,12 @@ public class client {
         gameState.setTokenString(tokenString);
     }
 
-    public static Board getCurrBoard() {
+    public static Game getCurrBoard() {
         return gameState.getCurrBoard();
     }
 
-    public static void setCurrBoard(Board currBoard) {
-        gameState.setCurrBoard(currBoard);
+    public static void setCurrBoard(chess.Game currGame) {
+        gameState.setCurrBoard(currGame);
     }
 
     public static void setUsername(String username) {

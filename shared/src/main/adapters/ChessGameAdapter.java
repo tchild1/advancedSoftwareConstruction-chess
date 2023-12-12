@@ -1,11 +1,13 @@
 package adapters;
 
+import chess.ChessGame;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import models.Game;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ChessGameAdapter implements JsonDeserializer<models.Game> {
     @Override
@@ -15,6 +17,14 @@ public class ChessGameAdapter implements JsonDeserializer<models.Game> {
         JsonElement chessboardElement = jsonObject.getAsJsonObject("game").get("board");
         chess.Board chessboard = jsonDeserializationContext.deserialize(chessboardElement, chess.Board.class);
         int ID = jsonObject.get("gameID").getAsInt();
+        String currentTurn = jsonObject.getAsJsonObject("game").getAsJsonPrimitive("currentTurn").getAsString();
+
+        ChessGame.TeamColor turn = null;
+        if (Objects.equals(currentTurn, "WHITE")) {
+            turn = ChessGame.TeamColor.WHITE;
+        } else {
+            turn = ChessGame.TeamColor.BLACK;
+        }
 
         java.lang.reflect.Type listType = new TypeToken<ArrayList<String>>() {}.getType();
         ArrayList<String> observerList = new Gson().fromJson(observersElement, listType);
@@ -41,6 +51,7 @@ public class ChessGameAdapter implements JsonDeserializer<models.Game> {
         game.getGame().setBoard(chessboard);
         game.getGame().setWinner(winner);
         game.setObservers(observerList);
+        game.getGame().setTeamTurn(turn);
 
         return game;
     }

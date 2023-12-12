@@ -1,11 +1,12 @@
 import chess.Board;
 import chess.ChessGame;
+import chess.Game;
 
 public class GameState {
 
     private String tokenString;
 
-    private Board currBoard;
+    private Game currBoard;
 
     private WSFacade gameConnection;
 
@@ -17,7 +18,7 @@ public class GameState {
 
     public GameState() {
         String tokenString = null;
-        Board currBoard = null;
+        Game currBoard = null;
         WSFacade gameConnection = null;
         String userName = null;
         ChessGame.TeamColor color = null;
@@ -40,12 +41,12 @@ public class GameState {
         this.tokenString = tokenString;
     }
 
-    public Board getCurrBoard() {
+    public Game getCurrBoard() {
         return currBoard;
     }
 
-    public void setCurrBoard(Board currBoard) {
-        this.currBoard = currBoard;
+    public void setCurrBoard(Game game) {
+        this.currBoard = game;
     }
 
     public WSFacade getGameConnection() {

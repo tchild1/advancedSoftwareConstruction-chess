@@ -40,7 +40,7 @@ public class ServerMessageAdapter implements JsonDeserializer<ServerMessage> {
     }
 
     private ErrorMessage createErrorMessage(JsonObject jsonObject) {
-        return null;
+        return new ErrorMessage(jsonObject.getAsJsonPrimitive("errorMessage").getAsString());
     }
 
     private NotificationMessage createNotificationMessage(JsonObject jsonObject) {

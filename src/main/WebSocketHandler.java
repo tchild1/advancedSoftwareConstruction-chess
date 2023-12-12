@@ -82,7 +82,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void joinObserverService(JoinObserverCommand command, Session session) throws SQLException, DataAccessException, IOException {
+    private void joinObserverService(JoinObserverCommand command, Session session) throws SQLException, DataAccessException, IOException, exceptions.DataAccessException {
         Game game = GameDAO.getGame(command.getGameID());
         connectionManager.add(command.getAuthString(), session);
         if (game == null) {
@@ -95,7 +95,9 @@ public class WebSocketHandler {
             loadGameMessage.setRequestId(command.getRequestId());
             connectionManager.connections.get(command.getAuthString()).send(new Gson().toJson(loadGameMessage));
 
-            NotificationMessage notificationMessage = new NotificationMessage("An observer joined the game.");
+            String username = AuthDAO.GetUsername(command.getAuthString());
+
+            NotificationMessage notificationMessage = new NotificationMessage(String.format("%s joined the game as an observer.", username));
             connectionManager.broadcast(command.getAuthString(), notificationMessage);
         }
     }
@@ -127,32 +129,117 @@ public class WebSocketHandler {
                     errorMessage.setRequestId(command.getRequestId());
                     connectionManager.connections.get(command.getAuthString()).send(new Gson().toJson(errorMessage));
                 } else {
-                    Collection<ChessMove> allValidMoves = game.getGame().validMoves(userMove.getStartPosition());
+                    if (game.getGame().getTeamTurn() != currTeam) {
+                        ErrorMessage errorMessage = new ErrorMessage("It is not your Turn!");
+                        errorMessage.setRequestId(command.getRequestId());
+                        connectionManager.connections.get(command.getAuthString()).send(new Gson().toJson(errorMessage));
+                    } else {
+                        Collection<ChessMove> allValidMoves = game.getGame().validMoves(userMove.getStartPosition());
 
-                    if (allValidMoves.contains(userMove)) {
-                        try {
-                            game.getGame().makeMove(userMove);
-                            GameDAO.updateGame(command.getGameID(), game);
+                        if (allValidMoves.contains(userMove)) {
+                            try {
+                                game.getGame().makeMove(userMove);
 
-                            LoadGameMessage loadGameMessage = new LoadGameMessage(game);
-                            loadGameMessage.setRequestId(command.getRequestId());
-                            connectionManager.broadcastToAll(loadGameMessage);
+                                ChessGame.TeamColor newTeamTurn = null;
+                                if (currTeam == ChessGame.TeamColor.WHITE){
+                                    newTeamTurn = ChessGame.TeamColor.BLACK;
+                                } else {
+                                    newTeamTurn = ChessGame.TeamColor.WHITE;
+                                }
 
-                            NotificationMessage notificationMessage = new NotificationMessage(String.format("%s has moved %s%s to %s%s.", command.getUserName(), command.getMove().getStartPosition().getRow(), command.getMove().getStartPosition().getColumn(), command.getMove().getEndPosition().getRow(), command.getMove().getEndPosition().getRow()));
-                            connectionManager.broadcast(command.getAuthString(), notificationMessage);
-                        } catch (InvalidMoveException e) {
-                            ErrorMessage errorMessage = new ErrorMessage("It is not your turn!");
+                                game.getGame().setTeamTurn(newTeamTurn);
+                                GameDAO.updateGame(command.getGameID(), game);
+
+
+                                LoadGameMessage loadGameMessage = new LoadGameMessage(game);
+                                loadGameMessage.setRequestId(command.getRequestId());
+                                connectionManager.broadcastToAll(loadGameMessage);
+
+                                NotificationMessage notificationMessage = new NotificationMessage(String.format("%s has moved %s%s to %s%s.", command.getUserName(), numberToColumn(command.getMove().getStartPosition().getColumn()), numberToRow(command.getMove().getStartPosition().getRow()), numberToColumn(command.getMove().getEndPosition().getColumn()), numberToRow(command.getMove().getEndPosition().getRow())));
+                                connectionManager.broadcast(command.getAuthString(), notificationMessage);
+
+                                if (game.getGame().isInCheckmate(newTeamTurn)) {
+                                    NotificationMessage checkNotificationMessage = new NotificationMessage(String.format("%s is in checkmate! %s won!", newTeamTurn, currTeam));
+                                    connectionManager.broadcastToAll(checkNotificationMessage);
+                                    game.getGame().setWinner(currTeam.name());
+                                } else if (game.getGame().isInCheck(newTeamTurn)) {
+                                    NotificationMessage checkNotificationMessage = new NotificationMessage(String.format("%s is in check!", newTeamTurn));
+                                    connectionManager.broadcastToAll(checkNotificationMessage);
+                                }
+                            } catch (InvalidMoveException e) {
+                                ErrorMessage errorMessage = new ErrorMessage("It is not your turn!");
+                                errorMessage.setRequestId(command.getRequestId());
+                                connectionManager.connections.get(command.getAuthString()).send(new Gson().toJson(errorMessage));
+                            }
+                        } else {
+                            ErrorMessage errorMessage = new ErrorMessage(String.format("%s%s to %s%s is an invalid move!", numberToColumn(command.getMove().getStartPosition().getColumn()), numberToRow(command.getMove().getStartPosition().getRow()), numberToColumn(command.getMove().getEndPosition().getColumn()), numberToRow(command.getMove().getEndPosition().getRow())));
                             errorMessage.setRequestId(command.getRequestId());
                             connectionManager.connections.get(command.getAuthString()).send(new Gson().toJson(errorMessage));
                         }
-                    } else {
-                        ErrorMessage errorMessage = new ErrorMessage(String.format("%s%s to %s%s is an invalid move!", command.getMove().getStartPosition().getRow(), command.getMove().getStartPosition().getColumn(), command.getMove().getEndPosition().getRow(), command.getMove().getEndPosition().getRow()));
-                        errorMessage.setRequestId(command.getRequestId());
-                        connectionManager.connections.get(command.getAuthString()).send(new Gson().toJson(errorMessage));
                     }
                 }
             }
         }
+    }
+
+    private int numberToRow(int row) {
+        switch (row) {
+            case 0 -> {
+                return 8;
+            }
+            case 1 -> {
+                return 7;
+            }
+            case 2 -> {
+                return 6;
+            }
+            case 3 -> {
+                return 5;
+            }
+            case 4 -> {
+                return 4;
+            }
+            case 5 -> {
+                return 3;
+            }
+            case 6 -> {
+                return 2;
+            }
+            case 7 -> {
+                return 1;
+            }
+        }
+        return 'a';
+    }
+
+    private char numberToColumn(int column) {
+        switch (column) {
+            case 0 -> {
+                return 'a';
+            }
+            case 1 -> {
+                return 'b';
+            }
+            case 2 -> {
+                return 'c';
+            }
+            case 3 -> {
+                return 'd';
+            }
+            case 4 -> {
+                return 'e';
+            }
+            case 5 -> {
+                return 'f';
+            }
+            case 6 -> {
+                return 'g';
+            }
+            case 7 -> {
+                return 'h';
+            }
+        }
+        return 'a';
     }
 
     private void leaveService(LeaveCommand command) throws SQLException, DataAccessException, IOException, exceptions.DataAccessException {
@@ -168,7 +255,7 @@ public class WebSocketHandler {
             }
         }
 
-        NotificationMessage notificationMessage = new NotificationMessage(String.format("%s has left the game.", command.getUserName()));
+        NotificationMessage notificationMessage = new NotificationMessage(String.format("%s has left the game.", AuthDAO.GetUsername(command.getAuthString())));
         connectionManager.broadcast(command.getAuthString(), notificationMessage);
 
         NotificationMessage userNotificationMessage = new NotificationMessage("You have left the game.");
@@ -204,9 +291,9 @@ public class WebSocketHandler {
             } else {
                 game.getGame().setWinner(winnerName);
                 GameDAO.updateGame(command.getGameId(), game);
-                NotificationMessage notificationMessage = new NotificationMessage(String.format("%s has resigned. %s won the game! ", "loserName", "winnerName"));
+                NotificationMessage notificationMessage = new NotificationMessage(String.format("%s has resigned. %s won the game! ", loserName, winnerName));
                 connectionManager.broadcast(command.getAuthString(), notificationMessage);
-                NotificationMessage notificationMessageToResignee = new NotificationMessage(String.format("You have resigned. %s won the game. ", "winnerName"));
+                NotificationMessage notificationMessageToResignee = new NotificationMessage(String.format("You have resigned. %s won the game. ", winnerName));
                 notificationMessageToResignee.setRequestId(command.getRequestId());
                 connectionManager.connections.get(command.getAuthString()).send(new Gson().toJson(notificationMessageToResignee));
             }
