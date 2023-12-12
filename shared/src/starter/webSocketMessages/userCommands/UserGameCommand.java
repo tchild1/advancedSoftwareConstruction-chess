@@ -1,10 +1,11 @@
 package webSocketMessages.userCommands;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a command a user can send the server over a websocket
- * 
+ *
  * Note: You can add to this class, but you should not alter the existing
  * methods.
  */
@@ -26,12 +27,32 @@ public class UserGameCommand {
 
     private final String authToken;
 
+    private String userName;
+
+    private UUID requestId;
+
     public String getAuthString() {
         return authToken;
     }
 
     public CommandType getCommandType() {
         return this.commandType;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public UUID getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(UUID requestId) {
+        this.requestId = requestId;
     }
 
     @Override

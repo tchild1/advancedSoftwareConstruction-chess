@@ -22,6 +22,7 @@ public class ChessGameAdapter implements JsonDeserializer<models.Game> {
         String whiteUsername = null;
         String blackUsername = null;
         String gameName = null;
+        String winner = null;
 
         if (jsonObject.get("whiteUsername") != null) {
             whiteUsername = jsonObject.get("whiteUsername").getAsString();
@@ -32,9 +33,13 @@ public class ChessGameAdapter implements JsonDeserializer<models.Game> {
         if (jsonObject.get("gameName") != null) {
             gameName = jsonObject.get("gameName").getAsString();
         }
+        if (jsonObject.getAsJsonObject("game").get("winner") != null) {
+            winner = jsonObject.getAsJsonObject("game").getAsJsonPrimitive("winner").getAsString();
+        }
 
         models.Game game = new Game(ID, whiteUsername, blackUsername, gameName);
         game.getGame().setBoard(chessboard);
+        game.getGame().setWinner(winner);
         game.setObservers(observerList);
 
         return game;

@@ -138,6 +138,29 @@ public class GameDAO {
         new Database().closeConnection(connection);
     }
 
+    public static void removeObserverFromGame(String gameID, String username) throws DataAccessException, dataAccess.DataAccessException, SQLException {
+        String sql = "SELECT game FROM chess.game WHERE game_id=?";
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, gameID);
+        ResultSet result = statement.executeQuery();
+
+        String json;
+        if (result.next()) {
+            json = result.getString(1);
+
+            GsonBuilder builder = createBuilder();
+
+            models.Game game = builder.create().fromJson(json, models.Game.class);
+            ArrayList<String> allObservers = game.getObservers();
+            allObservers.remove(username);
+
+            updateDatabaseGame(connection, gameID, game);
+        }
+        new Database().closeConnection(connection);
+    }
+
     /**
      * Gets all current games from the database
      *
@@ -161,10 +184,7 @@ public class GameDAO {
             String blackUsername = result.getString(3);
             String whiteUsername = result.getString(4);
 
-            GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeAdapter(models.Game.class, new ChessGameAdapter());
-            builder.registerTypeAdapter(chess.Board.class, new ChessBoardAdapter());
-            builder.registerTypeAdapter(chess.Piece.class, new ChessPieceAdapter());
+            GsonBuilder builder = createBuilder();
 
             models.Game game = builder.create().fromJson(json, models.Game.class);
             game.setGameID(ID);
@@ -174,6 +194,27 @@ public class GameDAO {
         }
         Collections.reverse(allGames);
         return allGames;
+    }
+
+    public static Game getGame(String gameID) throws dataAccess.DataAccessException, SQLException {
+        String sql = "SELECT game " +
+                "FROM chess.game " +
+                "WHERE game_id=? " +
+                "ORDER BY game_id asc";
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, gameID);
+        ResultSet result = statement.executeQuery();
+
+        String json = null;
+        if (result.next()) {
+            json = result.getString(1);
+        }
+
+        GsonBuilder builder = createBuilder();
+
+        return builder.create().fromJson(json, models.Game.class);
     }
 
     /**
@@ -248,4 +289,53 @@ public class GameDAO {
         updateStatement.executeUpdate();
     }
 
+    public static void updateGame(String gameID, Game game) throws dataAccess.DataAccessException, SQLException {
+        Connection connection = new Database().getConnection();
+
+        updateDatabaseGame(connection, gameID, game);
+    }
+
+    public static void removePlayer(String gameID, ChessGame.TeamColor color) throws dataAccess.DataAccessException, SQLException {
+        String sql = "SELECT game " +
+            "FROM chess.game " +
+            "WHERE game_id=? " +
+            "ORDER BY game_id asc";
+        Connection connection = new Database().getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, gameID);
+        ResultSet result = statement.executeQuery();
+
+        String json = null;
+        if (result.next()) {
+            json = result.getString(1);
+        }
+
+        GsonBuilder builder = createBuilder();
+
+        Game game = builder.create().fromJson(json, models.Game.class);
+        if (color == ChessGame.TeamColor.WHITE) {
+            game.setWhiteUsername(null);
+            String sqlUpdate = "UPDATE chess.game " +
+                    "SET white_username=?, game=? " +
+                    "WHERE game_id=? ";
+
+            PreparedStatement updateStatement = connection.prepareStatement(sqlUpdate);
+            updateStatement.setString(1, null);
+            updateStatement.setString(2, new Gson().toJson(game));
+            updateStatement.setString(3, gameID);
+            updateStatement.executeUpdate();
+        } else {
+            game.setBlackUsername(null);
+            String sqlUpdate = "UPDATE chess.game " +
+                    "SET black_username=?, game=? " +
+                    "WHERE game_id=? ";
+
+            PreparedStatement updateStatement = connection.prepareStatement(sqlUpdate);
+            updateStatement.setString(1, null);
+            updateStatement.setString(2, new Gson().toJson(game));
+            updateStatement.setString(3, gameID);
+            updateStatement.executeUpdate();
+        }
+    }
 }

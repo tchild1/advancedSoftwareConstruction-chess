@@ -1,6 +1,7 @@
 package webSocketMessages.serverMessages;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a Message the server can send through a WebSocket
@@ -9,7 +10,10 @@ import java.util.Objects;
  * methods.
  */
 public class ServerMessage {
+
     ServerMessageType serverMessageType;
+
+    UUID requestId;
 
     public enum ServerMessageType {
         LOAD_GAME,
@@ -38,5 +42,13 @@ public class ServerMessage {
     @Override
     public int hashCode() {
         return Objects.hash(getServerMessageType());
+    }
+
+    public UUID getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(UUID requestId) {
+        this.requestId = requestId;
     }
 }

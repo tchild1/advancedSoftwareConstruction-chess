@@ -6,12 +6,14 @@ import java.util.Iterator;
 public class Game implements ChessGame {
     Board board;
     TeamColor currentTurn;
+    String winner;
 
     public Game() {
         // creates a board and sets it up with all pieces in starting positions
         board = new Board();
         board.resetBoard();
         currentTurn = TeamColor.WHITE;
+        this.winner = null;
     }
     @Override
     public TeamColor getTeamTurn() {
@@ -21,6 +23,14 @@ public class Game implements ChessGame {
     @Override
     public void setTeamTurn(TeamColor team) {
         this.currentTurn = team;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
     }
 
     @Override

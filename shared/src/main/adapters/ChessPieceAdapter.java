@@ -15,7 +15,7 @@ public class ChessPieceAdapter implements JsonDeserializer<ChessPiece> {
         if ("ROOK".equals(pieceType)) {
             return new Gson().fromJson(jsonElement, chess.RookPiece.class);
         } else if ("KNIGHT".equals(pieceType)) {
-            return new Gson().fromJson(jsonElement, chess.KingPiece.class);
+            return new Gson().fromJson(jsonElement, chess.KnightPiece.class);
         } else if ("BISHOP".equals(pieceType)) {
             return new Gson().fromJson(jsonElement, chess.BishopPiece.class);
         } else if ("QUEEN".equals(pieceType)) {

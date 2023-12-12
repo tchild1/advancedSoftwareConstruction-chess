@@ -19,8 +19,12 @@ public class Server {
      * Runs servers and defines handlers for all requests
      */
     private void run() {
+        WebSocketHandler webSocketHandler = new WebSocketHandler();
+
         int PORT = 8080;
         Spark.port(PORT);
+
+        Spark.webSocket("/connect", webSocketHandler);
 
         Spark.externalStaticFileLocation("web");
 

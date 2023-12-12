@@ -1,5 +1,6 @@
 package services;
 
+import chess.ChessGame;
 import daos.AuthDAO;
 import exceptions.DataAccessException;
 import daos.GameDAO;
@@ -31,7 +32,7 @@ public class JoinGameService {
             if (GameDAO.GameExists(request.getGameID())) {
                 String username = AuthDAO.GetUsername(request.getAuthToken());
                 // if not color, add as an observer
-                if (request.getPlayerColor() != null) {
+                if (request.getPlayerColor() != ChessGame.TeamColor.OBSERVER) {
                     GameDAO.AddPlayerToGame(request.getGameID(), request.getPlayerColor(), username);
                 } else {
                     GameDAO.AddObserverToGame(request.getGameID(), username);

@@ -1,18 +1,20 @@
+
 import chess.Board;
 import chess.ChessGame;
-import chess.ChessPiece;
 
-import java.io.*;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class client {
 
-    private static String tokenString = null;
-    private static Scanner Scanner = new Scanner(System.in);
+    private static GameState gameState;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    private static final Scanner Scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws Exception {
+
+        gameState = new GameState();
 
         System.out.print("Welcome to Chess! Type Help to see commands.\n\n");
 
@@ -21,7 +23,12 @@ public class client {
             if (!isAuthenticated()) {
                 System.out.print("[LOGGED OUT] Enter a command or 'help' to see command options >>> ");
             } else {
-                System.out.print("[LOGGED IN] Enter a command or 'help' to see command options >>> ");
+                if (isInGame()) {
+//                    Display.printChessBoard(getUserColor(), gameState.getCurrBoard());
+                    System.out.print("[IN GAME] Enter a command or 'help' to see command options >>> ");
+                } else {
+                    System.out.print("[LOGGED IN] Enter a command or 'help' to see command options >>> ");
+                }
             }
 
             String userInput = getUserInput().nextLine();
@@ -29,7 +36,7 @@ public class client {
         }
     }
 
-    private static boolean handleUserInput(String i) throws IOException, InterruptedException {
+    private static boolean handleUserInput(String i) throws Exception {
         var tokens = i.toLowerCase().split(" ");
         var input = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
@@ -85,6 +92,35 @@ public class client {
             }
         } else if (Objects.equals(input, "clear")) {
             ServerFacade.userEnteredClear();
+        } else if (Objects.equals(input, "redraw")) {
+            Display.printChessBoard(client.getUserColor(), client.getCurrBoard());
+        } else if (Objects.equals(input, "leave")) {
+            if (isInGame()) {
+                if (checkParameters(params, 0)) {
+                    System.out.println(ServerFacade.userEnteredLeave());
+                }
+            } else {
+                System.out.println("You need to be in a Game to leave.");
+            }
+        } else if (Objects.equals(input, "makemove")) {
+            if (isInGame()) {
+                if (checkParameters(params, 2)) {
+                    System.out.println(ServerFacade.userEnteredMakeMove(params[0], params[1]));
+                }
+            } else {
+                System.out.println("You need to be in a Game to make a move.");
+            }
+            
+        } else if (Objects.equals(input, "resign")) {
+            if (isInGame()) {
+                if (checkParameters(params, 0)) {
+                    System.out.println(ServerFacade.userEnteredResign());
+                }
+            } else {
+                System.out.println("You must be in a game to resign.");
+            }
+        } else if (Objects.equals(input, "highlight")) {
+            System.out.println(ServerFacade.userEnteredHighlight());
         } else {
             System.out.println("Command not recognized. Please enter a valid command.");
         }
@@ -107,14 +143,58 @@ public class client {
     }
 
     static boolean isAuthenticated() {
-        return tokenString != null;
+        return gameState.getTokenString() != null;
+    }
+
+    public static void setGameConnection(WSFacade gameConnection) {
+        gameState.setGameConnection(gameConnection);
+    }
+
+    public static WSFacade getGameConnection() {
+        return gameState.getGameConnection();
+    }
+
+    static boolean isInGame() {
+        return gameState.getGameConnection() != null;
     }
 
     public static String getTokenString() {
-        return tokenString;
+        return gameState.getTokenString();
     }
 
     public static void setTokenString(String tokenString) {
-        client.tokenString = tokenString;
+        gameState.setTokenString(tokenString);
+    }
+
+    public static Board getCurrBoard() {
+        return gameState.getCurrBoard();
+    }
+
+    public static void setCurrBoard(Board currBoard) {
+        gameState.setCurrBoard(currBoard);
+    }
+
+    public static void setUsername(String username) {
+        gameState.setUserName(username);
+    }
+
+    public static void setUserColor(ChessGame.TeamColor color) {
+        gameState.setColor(color);
+    }
+
+    public static ChessGame.TeamColor getUserColor() {
+        return gameState.getColor();
+    }
+
+    public static void setGameID(String gameID) {
+        gameState.setGameID(gameID);
+    }
+
+    public static String getGameID() {
+        return gameState.getGameID();
+    }
+
+    public static String getUserName() {
+        return gameState.getUserName();
     }
 }

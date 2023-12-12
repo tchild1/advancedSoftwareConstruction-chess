@@ -1,10 +1,21 @@
 import chess.Board;
+import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 
 public class Display {
+
+    public static void printChessBoard(ChessGame.TeamColor color, Board board) {
+        if (color == ChessGame.TeamColor.WHITE || color == ChessGame.TeamColor.OBSERVER) {
+            printChessboardForWhite(board);
+        } else {
+            printChessboardForBlack(board);
+        }
+    }
+
     public static void printChessboardForWhite(Board b) {
         int numRow = 1;
+        System.out.print("\n");
         printBorderBackwards();
         for (int row=b.board.length-1;row>=0;row--) {
             System.out.print("\u001b[30;100m " + numRow + " \u001b[0m");
@@ -20,10 +31,12 @@ public class Display {
             numRow++;
         }
         printBorderBackwards();
+        System.out.print("\n");
     }
 
     public static void printChessboardForBlack(Board b) {
         int numRow = 8;
+        System.out.print("\n");
         printBorderInOrder();
         for (int row=0;row<b.board.length;row++) {
             System.out.print("\u001b[30;100m " + numRow + " \u001b[0m");
@@ -39,6 +52,7 @@ public class Display {
             numRow--;
         }
         printBorderInOrder();
+        System.out.print("\n");
     }
 
     private static void printBorderInOrder() {

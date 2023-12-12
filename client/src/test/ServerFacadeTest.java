@@ -23,7 +23,7 @@ class ServerFacadeTest {
     }
 
     @Test
-    void joinPositive() throws IOException, InterruptedException {
+    void joinPositive() throws Exception {
         ServerFacade.userEnteredRegister("testUser", "pass", "email");
         String gameID = ServerFacade.userEnteredCreateGame("testGame").split(" ")[1];
 
@@ -31,7 +31,7 @@ class ServerFacadeTest {
     }
 
     @Test
-    void joinNegative() throws IOException, InterruptedException {
+    void joinNegative() throws Exception {
         ServerFacade.userEnteredRegister("testUser", "pass", "email");
 
         assertEquals("Failed to add user to game.", ServerFacade.userEnteredJoin("0000", "W"), "Game does not exist, you should not be able to join it.");
