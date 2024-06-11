@@ -1,1 +1,1 @@
-# advancedSoftwareConstruction-chess
+# Chess
